@@ -6277,6 +6277,7 @@
     var LC3Error = Lc3Error.LC3Error;
     var LC3IllegalParameterError = Lc3Error.LC3IllegalParameterError;
     var LC3IllegalIndexError = Lc3Error.LC3IllegalIndexError;
+    var LC3IllegalOperationError = Lc3Error.LC3IllegalOperationError;
     module.exports = {
       "Core": {
         "LC3SampleRate": LC3SampleRate,
@@ -6292,7 +6293,8 @@
       "Error": {
         "LC3Error": LC3Error,
         "LC3IllegalParameterError": LC3IllegalParameterError,
-        "LC3IllegalIndexError": LC3IllegalIndexError
+        "LC3IllegalIndexError": LC3IllegalIndexError,
+        "LC3IllegalOperationError": LC3IllegalOperationError
       }
     };
   }
