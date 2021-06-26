@@ -59,7 +59,7 @@
     }
   }
 
-  global[namespace] = ModuleLoad("library/api");
+  global[namespace] = ModuleLoad("browser/src/api");
 })(window, "LC3", {
   "lc3/common/array_util": function lc3CommonArray_util(module, require) {
     function ArrayFlip(arr) {
@@ -553,10 +553,13 @@
         var bec = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new LC3BEC(false);
         var rbuf = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : new Array(NF);
 
-        while (rbuf.length < NF) {
-          rbuf.push(0);
+        if (!(typeof Int16Array != "undefined" && rbuf instanceof Int16Array)) {
+          while (rbuf.length < NF) {
+            rbuf.push(0);
+          }
         }
 
+        var rbufcap = rbuf.length;
         var nbytes = bytes.length;
         var nbits = nbytes << 3 >>> 0;
 
@@ -1093,7 +1096,7 @@
         var x_hat = imdct.update(X_hat);
         var x_ltpf_hat = ltpf_dec.update(x_hat, ltpf_active, ltpf_pitch_index, nbits);
 
-        for (var _i4 = 0; _i4 < NF; ++_i4) {
+        for (var _i4 = 0, _iEnd = Math.min(NF, rbufcap); _i4 < _iEnd; ++_i4) {
           var _tmp2 = x_ltpf_hat[_i4];
           _tmp2 = Math.round(_tmp2);
 
@@ -2201,6 +2204,7 @@
       var cur_side = new Array(CURMEMN);
       var ac_ctx = new Array(ACCTXMEMN);
       var lsbs = new Array(3200);
+      var xs_clipped = new Array(NF);
 
       this.getFrameSize = function () {
         return NF;
@@ -2221,24 +2225,32 @@
           throw new LC3IllegalParameterError("Length of the buffer (i.e. bytesbuf) is smaller than the " + "byte count.");
         }
 
-        for (var n = 0; n < NF; ++n) {
-          var tmp = xs[n];
+        if (typeof Int16Array != "undefined" && xs instanceof Int16Array) {
+          for (var n = 0; n < NF; ++n) {
+            xs_clipped[n] = xs[n];
+          }
+        } else {
+          for (var _n11 = 0; _n11 < NF; ++_n11) {
+            var tmp = xs[_n11];
 
-          if (tmp > 32767) {
-            xs[n] = 32767;
-          } else if (tmp < -32768) {
-            xs[n] = -32768;
-          } else {}
+            if (tmp > 32767) {
+              xs_clipped[_n11] = 32767;
+            } else if (tmp < -32768) {
+              xs_clipped[_n11] = -32768;
+            } else {
+              xs_clipped[_n11] = tmp;
+            }
+          }
         }
 
         var nbits = nbytes << 3 >>> 0;
-        mdct.update(xs);
+        mdct.update(xs_clipped);
         var nn_flag = mdct.getNearNyquistFlag();
         var X = mdct.getSpectralCoefficients();
         var EB = mdct.getSpectralEnergyBandEstimation();
         var Pbw = bwdet.detect(EB);
         var nbitsBW = bwdet.getBitConsumption();
-        akdet.update(xs, nbytes);
+        akdet.update(xs_clipped, nbytes);
         var F_att = akdet.getAttackFlag();
         sns.update(EB, X, F_att);
         var Xs = sns.getShapedSpectrumCoefficients();
@@ -2256,7 +2268,7 @@
         var tns_RCi = tns.getRcIndices();
         var tns_lpc_weighting = tns.getLpcWeighting();
         var Xf = tns.getFilteredSpectrumCoefficients();
-        ltpf_enc.update(xs, nbits, nn_flag);
+        ltpf_enc.update(xs_clipped, nbits, nn_flag);
         ltpf_enc.getEncoderParameters(ltpf_enc_param_buf);
         var nbitsLTPF = ltpf_enc_param_buf[0];
         var ltpf_pitch_present = ltpf_enc_param_buf[1];
@@ -2791,12 +2803,12 @@
         var nn_high = 0,
             nn_low = 0;
 
-        for (var _n11 = nn_idx; _n11 < NB; ++_n11) {
-          nn_high += EB[_n11];
+        for (var _n12 = nn_idx; _n12 < NB; ++_n12) {
+          nn_high += EB[_n12];
         }
 
-        for (var _n12 = 0; _n12 < nn_idx; ++_n12) {
-          nn_low += EB[_n12];
+        for (var _n13 = 0; _n13 < nn_idx; ++_n13) {
+          nn_low += EB[_n13];
         }
 
         if (nn_high > NN_thresh * nn_low) {
@@ -2951,21 +2963,21 @@
           }
         }
         {
-          for (var _n13 = 0; _n13 < len12p8; ++_n13) {
-            var w = buf_12p8[_n13] + h50_z1 * H50_A1 + h50_z2 * H50_A2;
+          for (var _n14 = 0; _n14 < len12p8; ++_n14) {
+            var w = buf_12p8[_n14] + h50_z1 * H50_A1 + h50_z2 * H50_A2;
             var y = w * H50_B0 + h50_z1 * H50_B1 + h50_z2 * H50_B2;
             h50_z2 = h50_z1;
             h50_z1 = w;
-            buf_12p8[_n13] = y;
+            buf_12p8[_n14] = y;
           }
         }
         {
           x12p8D_win.append(buf_12p8);
         }
         {
-          for (var _n14 = 0, off = -3; _n14 < len6p4; ++_n14, off += 2) {
+          for (var _n15 = 0, off = -3; _n15 < len6p4; ++_n15, off += 2) {
             x12p8D_win.bulkGet(buf_downsamp, 0, off, 5);
-            buf_6p4[_n14] = 0.1236796411180537 * buf_downsamp[0] + 0.2353512128364889 * buf_downsamp[1] + 0.2819382920909148 * buf_downsamp[2] + 0.2353512128364889 * buf_downsamp[3] + 0.1236796411180537 * buf_downsamp[4];
+            buf_6p4[_n15] = 0.1236796411180537 * buf_downsamp[0] + 0.2353512128364889 * buf_downsamp[1] + 0.2819382920909148 * buf_downsamp[2] + 0.2353512128364889 * buf_downsamp[3] + 0.1236796411180537 * buf_downsamp[4];
           }
 
           x6p4_win.append(buf_6p4);
@@ -3051,13 +3063,13 @@
           x6p4_win.bulkGet(corrbuf2, 0, -T1, corrlen);
           x6p4_win.bulkGet(corrbuf3, 0, -T2, corrlen);
 
-          for (var _n15 = 0; _n15 < corrlen; ++_n15) {
-            var c1 = corrbuf1[_n15];
-            var c2 = corrbuf2[_n15];
+          for (var _n16 = 0; _n16 < corrlen; ++_n16) {
+            var c1 = corrbuf1[_n16];
+            var c2 = corrbuf2[_n16];
             T1norm_numer += c1 * c2;
             T1norm_denom1 += c1 * c1;
             T1norm_denom2 += c2 * c2;
-            c2 = corrbuf3[_n15];
+            c2 = corrbuf3[_n16];
             T2norm_numer += c1 * c2;
             T2norm_denom1 += c1 * c1;
             T2norm_denom2 += c2 * c2;
@@ -3107,8 +3119,8 @@
               for (var _k50 = kminII - 4, p = 0; _k50 <= koff; ++_k50, ++p) {
                 var _tmp11 = 0;
 
-                for (var _n16 = 0; _n16 < len12p8; ++_n16) {
-                  _tmp11 += R12p8_buf1[_n16] * R12p8_buf2[koff + _n16 - _k50];
+                for (var _n17 = 0; _n17 < len12p8; ++_n17) {
+                  _tmp11 += R12p8_buf1[_n17] * R12p8_buf2[koff + _n17 - _k50];
                 }
 
                 R12p8[p] = _tmp11;
@@ -3190,7 +3202,7 @@
               x12p8D_win.bulkGet(xi_buf1, 0, -2, xi_bufsz);
               x12p8D_win.bulkGet(xi_buf2, 0, -2 - pitch_int, xi_bufsz);
 
-              for (var _n17 = 0; _n17 < len12p8; ++_n17) {
+              for (var _n18 = 0; _n18 < len12p8; ++_n18) {
                 var _t2 = 0;
                 var _t3 = 0;
 
@@ -3203,7 +3215,7 @@
                     hi_coeff = 0;
                   }
 
-                  var xi_off = _n17 - _k52 + 4;
+                  var xi_off = _n18 - _k52 + 4;
                   _t2 += hi_coeff * xi_buf1[xi_off];
                   var p2 = _p2 - pitch_fr;
 
@@ -3438,8 +3450,8 @@
       var index_joint = 0;
       var Xs = new Array(NF);
 
-      for (var _n18 = 0; _n18 < NF; ++_n18) {
-        Xs[_n18] = 0;
+      for (var _n19 = 0; _n19 < NF; ++_n19) {
+        Xs[_n19] = 0;
       }
 
       var shape_j = -1,
@@ -3907,22 +3919,22 @@
           r1[15] = scf[15] - st1[15];
         }
         {
-          for (var _n19 = 0; _n19 < 16; ++_n19) {
+          for (var _n20 = 0; _n20 < 16; ++_n20) {
             var _tmp12 = 0;
 
             for (var row = 0; row < 16; ++row) {
-              _tmp12 += r1[row] * DCTII_16x16[row][_n19];
+              _tmp12 += r1[row] * DCTII_16x16[row][_n20];
             }
 
-            t2rot[_n19] = _tmp12;
+            t2rot[_n20] = _tmp12;
           }
 
-          for (var _n20 = 0; _n20 < 10; ++_n20) {
-            t2rot_setA[_n20] = t2rot[_n20];
+          for (var _n21 = 0; _n21 < 10; ++_n21) {
+            t2rot_setA[_n21] = t2rot[_n21];
           }
 
-          for (var _n21 = 10, _i6 = 0; _n21 < 16; ++_n21, ++_i6) {
-            t2rot_setB[_i6] = t2rot[_n21];
+          for (var _n22 = 10, _i6 = 0; _n22 < 16; ++_n22, ++_i6) {
+            t2rot_setB[_i6] = t2rot[_n22];
           }
         }
         {
@@ -4078,14 +4090,14 @@
           var _vec = sns_xq[shape_j];
           var _gain = GIJ[shape_j][gain_i];
 
-          for (var _n22 = 0; _n22 < 16; ++_n22) {
-            var scfQ_n = st1[_n22];
+          for (var _n23 = 0; _n23 < 16; ++_n23) {
+            var scfQ_n = st1[_n23];
 
             for (var col = 0; col < 16; ++col) {
-              scfQ_n += _gain * _vec[col] * DCTII_16x16[_n22][col];
+              scfQ_n += _gain * _vec[col] * DCTII_16x16[_n23][col];
             }
 
-            scfQ[_n22] = scfQ_n;
+            scfQ[_n23] = scfQ_n;
           }
         }
         {
@@ -4190,15 +4202,15 @@
         {
           if (NB < 64) {
             var _i8 = 0,
-                _iEnd = 64 - NB,
+                _iEnd2 = 64 - NB,
                 _j2 = 0;
 
-            for (; _i8 < _iEnd; ++_i8, _j2 += 2) {
+            for (; _i8 < _iEnd2; ++_i8, _j2 += 2) {
               scfQint_tmp[_i8] = 0.5 * (scfQint[_j2] + scfQint[_j2 + 1]);
             }
 
             for (; _i8 < NB; ++_i8) {
-              scfQint_tmp[_i8] = scfQint[_iEnd + _i8];
+              scfQint_tmp[_i8] = scfQint[_iEnd2 + _i8];
             }
 
             scfQint_use = scfQint_tmp;
@@ -4429,8 +4441,8 @@
             gg = Math.pow(10, (gg_ind + gg_off) / 28);
           }
           {
-            for (var _n23 = 0; _n23 < NE; ++_n23) {
-              var _tmp14 = Xf[_n23];
+            for (var _n24 = 0; _n24 < NE; ++_n24) {
+              var _tmp14 = Xf[_n24];
 
               if (_tmp14 >= 0) {
                 _tmp14 = Math.trunc(_tmp14 / gg + 0.375);
@@ -4444,7 +4456,7 @@
                 _tmp14 = -32768;
               } else {}
 
-              Xq[_n23] = _tmp14;
+              Xq[_n24] = _tmp14;
             }
           }
           {
@@ -4474,12 +4486,12 @@
             lastnz_trunc = 2;
             var c = 0;
 
-            for (var _n24 = 0; _n24 < lastnz; _n24 += 2) {
-              var Xq_n0 = Xq[_n24];
-              var Xq_n1 = Xq[_n24 + 1];
+            for (var _n25 = 0; _n25 < lastnz; _n25 += 2) {
+              var Xq_n0 = Xq[_n25];
+              var Xq_n1 = Xq[_n25 + 1];
               var t = c + rateFlag;
 
-              if (_n24 > NE_div_2) {
+              if (_n25 > NE_div_2) {
                 t += 256;
               }
 
@@ -4533,7 +4545,7 @@
               }
 
               if ((Xq_n0 != 0 || Xq_n1 != 0) && nbits_est <= nbits_spec << 11 >>> 0) {
-                lastnz_trunc = _n24 + 2;
+                lastnz_trunc = _n25 + 2;
                 nbits_trunc = nbits_est;
               }
 
@@ -4757,11 +4769,11 @@
                 for (var _s = 0; _s < 3; ++_s) {
                   var _tmp15 = 0;
 
-                  var _n25 = sub_start[_s],
-                      _n26 = sub_stop[_s] - _k55;
+                  var _n26 = sub_start[_s],
+                      _n27 = sub_stop[_s] - _k55;
 
-                  for (var _n27 = _n25; _n27 < _n26; ++_n27) {
-                    _tmp15 += Xs[_n27] * Xs[_n27 + _k55];
+                  for (var _n28 = _n26; _n28 < _n27; ++_n28) {
+                    _tmp15 += Xs[_n28] * Xs[_n28 + _k55];
                   }
 
                   _sum += _tmp15 / Es[_s];
@@ -4790,8 +4802,8 @@
             for (var _k56 = 1; _k56 < 9; ++_k56) {
               var rc = 0;
 
-              for (var _n28 = 0; _n28 < _k56; ++_n28) {
-                rc += LPCs[_n28] * R[_k56 - _n28];
+              for (var _n29 = 0; _n29 < _k56; ++_n29) {
+                rc += LPCs[_n29] * R[_k56 - _n29];
               }
 
               if (LPC_err < 1e-31) {
@@ -4802,14 +4814,14 @@
               rc = -rc / LPC_err;
               LPCs_tmp1[0] = 1;
 
-              for (var _n29 = 1; _n29 < _k56; ++_n29) {
-                LPCs_tmp1[_n29] = LPCs[_n29] + rc * LPCs[_k56 - _n29];
+              for (var _n30 = 1; _n30 < _k56; ++_n30) {
+                LPCs_tmp1[_n30] = LPCs[_n30] + rc * LPCs[_k56 - _n30];
               }
 
               LPCs_tmp1[_k56] = rc;
 
-              for (var _n30 = 0; _n30 <= _k56; ++_n30) {
-                LPCs[_n30] = LPCs_tmp1[_n30];
+              for (var _n31 = 0; _n31 <= _k56; ++_n31) {
+                LPCs[_n31] = LPCs_tmp1[_n31];
               }
 
               LPC_err *= 1 - rc * rc;
@@ -4868,12 +4880,12 @@
                 RC_f[_k57 - 1] = LPCs_tmp1_k;
                 var e = 1 - LPCs_tmp1_k * LPCs_tmp1_k;
 
-                for (var _n31 = 1; _n31 < _k57; ++_n31) {
-                  LPCs_tmp2[_n31] = (LPCs_tmp1[_n31] - LPCs_tmp1_k * LPCs_tmp1[_k57 - _n31]) / e;
+                for (var _n32 = 1; _n32 < _k57; ++_n32) {
+                  LPCs_tmp2[_n32] = (LPCs_tmp1[_n32] - LPCs_tmp1_k * LPCs_tmp1[_k57 - _n32]) / e;
                 }
 
-                for (var _n32 = 1; _n32 < _k57; ++_n32) {
-                  LPCs_tmp1[_n32] = LPCs_tmp2[_n32];
+                for (var _n33 = 1; _n33 < _k57; ++_n33) {
+                  LPCs_tmp1[_n33] = LPCs_tmp2[_n33];
                 }
               }
             } else {
@@ -4981,8 +4993,8 @@
               var start_freq = start_freqs[_f9],
                   stop_freq = stop_freqs[_f9];
 
-              for (var _n33 = start_freq; _n33 < stop_freq; ++_n33) {
-                var t = Xs[_n33];
+              for (var _n34 = start_freq; _n34 < stop_freq; ++_n34) {
+                var t = Xs[_n34];
                 var st_save = t;
 
                 for (var _k59 = 0; _k59 < RCorderS1; ++_k59) {
@@ -4996,7 +5008,7 @@
 
                 t += _RCq_f2[RCorderS1] * st[RCorderS1];
                 st[RCorderS1] = st_save;
-                Xf[_n33] = t;
+                Xf[_n34] = t;
               }
             }
           }
@@ -5141,9 +5153,9 @@
         }
       }
 
-      for (var _n34 = N; _n34 <= MsN; ++_n34) {
-        B_RE[_n34] = 0;
-        B_IM[_n34] = 0;
+      for (var _n35 = N; _n35 <= MsN; ++_n35) {
+        B_RE[_n35] = 0;
+        B_IM[_n35] = 0;
       }
 
       fft.transform(B_RE, B_IM);
@@ -5156,43 +5168,43 @@
         var A_RE = new Array(M);
         var A_IM = new Array(M);
 
-        for (var _n35 = 0; _n35 < N; ++_n35) {
-          var xn_re = x_re[_n35],
-              xn_im = x_im[_n35];
-          var twn_re = TW_RE[_n35];
-          var twn_im = -TW_IM[_n35];
-          A_RE[_n35] = xn_re * twn_re - xn_im * twn_im;
-          A_IM[_n35] = xn_im * twn_re + xn_re * twn_im;
+        for (var _n36 = 0; _n36 < N; ++_n36) {
+          var xn_re = x_re[_n36],
+              xn_im = x_im[_n36];
+          var twn_re = TW_RE[_n36];
+          var twn_im = -TW_IM[_n36];
+          A_RE[_n36] = xn_re * twn_re - xn_im * twn_im;
+          A_IM[_n36] = xn_im * twn_re + xn_re * twn_im;
         }
 
-        for (var _n36 = N; _n36 < M; ++_n36) {
-          A_RE[_n36] = 0;
-          A_IM[_n36] = 0;
-        }
-
-        fft.transform(A_RE, A_IM);
-
-        for (var _n37 = 0; _n37 < M; ++_n37) {
-          var a_re = A_RE[_n37],
-              a_im = A_IM[_n37];
-          var b_re = B_RE[_n37],
-              b_im = B_IM[_n37];
-          A_RE[_n37] = (a_re * b_re - a_im * b_im) / M;
-          A_IM[_n37] = -(a_im * b_re + a_re * b_im) / M;
+        for (var _n37 = N; _n37 < M; ++_n37) {
+          A_RE[_n37] = 0;
+          A_IM[_n37] = 0;
         }
 
         fft.transform(A_RE, A_IM);
 
-        for (var _n38 = 0; _n38 < N; ++_n38) {
-          var _a_re = A_RE[_n38],
-              _a_im = -A_IM[_n38];
+        for (var _n38 = 0; _n38 < M; ++_n38) {
+          var a_re = A_RE[_n38],
+              a_im = A_IM[_n38];
+          var b_re = B_RE[_n38],
+              b_im = B_IM[_n38];
+          A_RE[_n38] = (a_re * b_re - a_im * b_im) / M;
+          A_IM[_n38] = -(a_im * b_re + a_re * b_im) / M;
+        }
 
-          var _twn_re = TW_RE[_n38];
+        fft.transform(A_RE, A_IM);
 
-          var _twn_im = -TW_IM[_n38];
+        for (var _n39 = 0; _n39 < N; ++_n39) {
+          var _a_re = A_RE[_n39],
+              _a_im = -A_IM[_n39];
 
-          x_re[_n38] = _a_re * _twn_re - _a_im * _twn_im;
-          x_im[_n38] = _a_im * _twn_re + _a_re * _twn_im;
+          var _twn_re = TW_RE[_n39];
+
+          var _twn_im = -TW_IM[_n39];
+
+          x_re[_n39] = _a_re * _twn_re - _a_im * _twn_im;
+          x_im[_n39] = _a_im * _twn_re + _a_re * _twn_im;
         }
       };
     }
@@ -5642,7 +5654,7 @@
         var next_sign_ind = 0;
         var got_sign_flag = false;
 
-        for (var pos = N - 1, _n39 = 0; pos >= 0; --pos, ++_n39) {
+        for (var pos = N - 1, _n40 = 0; pos >= 0; --pos, ++_n40) {
           var val = X[pos];
 
           if (val != 0 && got_sign_flag) {
@@ -5657,7 +5669,7 @@
             next_sign_ind = 1;
           }
 
-          index += MPVQ_offsets[_n39][k_acc];
+          index += MPVQ_offsets[_n40][k_acc];
           k_acc += Math.abs(val);
 
           if (k_acc > Kmax) {
@@ -5701,13 +5713,13 @@
           LS_ind = -1;
         }
 
-        for (var _n40 = 0; _n40 < N; ++_n40) {
-          vec[_n40] = 0;
+        for (var _n41 = 0; _n41 < N; ++_n41) {
+          vec[_n41] = 0;
         }
 
         var k_max_local = K;
 
-        for (var pos = 0, _n41 = N - 1; pos < N; ++pos, --_n41) {
+        for (var pos = 0, _n42 = N - 1; pos < N; ++pos, --_n42) {
           if (index == 0) {
             if (LS_ind < 0) {
               vec[pos] = -k_max_local;
@@ -5729,7 +5741,7 @@
             }
 
             mid >>>= 1;
-            var amp_offset = MPVQ_offsets[_n41][mid];
+            var amp_offset = MPVQ_offsets[_n42][mid];
 
             if (amp_offset > index) {
               high = mid - 1;
@@ -5739,7 +5751,7 @@
           }
 
           var k_delta = k_max_local - low;
-          index -= MPVQ_offsets[_n41][low];
+          index -= MPVQ_offsets[_n42][low];
 
           if (k_delta != 0) {
               if (LS_ind < 0) {
@@ -6226,29 +6238,36 @@
       LC3Error.call(this, message);
     }
 
+    function LC3IllegalOperationError() {
+      var message = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+      LC3Error.call(this, message);
+    }
+
     Inherits(LC3Error, Error);
     Inherits(LC3BugError, LC3Error);
     Inherits(LC3IllegalParameterError, LC3Error);
     Inherits(LC3IllegalIndexError, LC3Error);
+    Inherits(LC3IllegalOperationError, LC3Error);
     module.exports = {
       "LC3Error": LC3Error,
       "LC3BugError": LC3BugError,
       "LC3IllegalParameterError": LC3IllegalParameterError,
-      "LC3IllegalIndexError": LC3IllegalIndexError
+      "LC3IllegalIndexError": LC3IllegalIndexError,
+      "LC3IllegalOperationError": LC3IllegalOperationError
     };
   },
-  "library/api": function libraryApi(module, require) {
-    var Lc3Fs = require("./../lc3/common/fs");
+  "browser/src/api": function browserSrcApi(module, require) {
+    var Lc3Fs = require("./../../lc3/common/fs");
 
-    var Lc3Nms = require("./../lc3/common/nms");
+    var Lc3Nms = require("./../../lc3/common/nms");
 
-    var Lc3EcEncoder = require("./../lc3/encoder/encoder");
+    var Lc3EcEncoder = require("./../../lc3/encoder/encoder");
 
-    var Lc3DcDecoder = require("./../lc3/decoder/decoder");
+    var Lc3DcDecoder = require("./../../lc3/decoder/decoder");
 
-    var Lc3DcBec = require("./../lc3/decoder/bec");
+    var Lc3DcBec = require("./../../lc3/decoder/bec");
 
-    var Lc3Error = require("./../lc3/error");
+    var Lc3Error = require("./../../lc3/error");
 
     var LC3SampleRate = Lc3Fs.LC3SampleRate;
     var LC3FrameDuration = Lc3Nms.LC3FrameDuration;

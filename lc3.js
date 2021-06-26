@@ -100,7 +100,7 @@
     //
 
     //  Load entry module.
-    global[namespace] = ModuleLoad("library/api");
+    global[namespace] = ModuleLoad("browser/src/api");
 })(window, "LC3", {
     "lc3/common/array_util": function(module, require) {
 //
@@ -1075,10 +1075,10 @@ function LC3Decoder(Nms, Fs) {
      *    - The bytes buffer that contains the encoded frame.
      *  @param {InstanceType<typeof LC3BEC>} [bec]
      *    - The bit error condition (BEC) context.
-     *  @param {Number[]} [rbuf]
+     *  @param {Number[]|Int16Array} [rbuf]
      *    - The buffer of the returning array (used for reducing array 
      *      allocation).
-     *  @returns {Number[]}
+     *  @returns {Number[]|Int16Array}
      *    - The decoded samples.
      */
     this.decode = function(
@@ -1087,9 +1087,15 @@ function LC3Decoder(Nms, Fs) {
         rbuf = new Array(NF)
     ) {
         //  Ensure the returning array buffer size.
-        while (rbuf.length < NF) {
-            rbuf.push(0);
+        if (!(
+            typeof(Int16Array) != "undefined" && 
+            (rbuf instanceof Int16Array)
+        )) {
+            while (rbuf.length < NF) {
+                rbuf.push(0);
+            }
         }
+        let rbufcap = rbuf.length;
 
         let nbytes = bytes.length;
         let nbits = ((nbytes << 3) >>> 0);
@@ -1728,7 +1734,7 @@ tnsloop:
         // console.log("x_ltpf_hat[]=" + x_ltpf_hat.toString());
 
         //  Output signal scaling and rounding.
-        for (let i = 0; i < NF; ++i) {
+        for (let i = 0, iEnd = Math.min(NF, rbufcap); i < iEnd; ++i) {
             let tmp = x_ltpf_hat[i];
             tmp = Math.round(tmp);
             if (tmp > 32767) {
@@ -2237,6 +2243,8 @@ function LC3LongTermPostfilterDecoder(Nms, Fs) {
      *    - The `pitch_index` parameter.
      *  @param {Number} nbits
      *    - The bit count.
+     *  @returns {Number[]}
+     *    - The LTPFed time samples.
      */
     this.update = function(x_hat, ltpf_active, pitch_index, nbits) {
         x_hat_win.append(x_hat);
@@ -3605,6 +3613,8 @@ function LC3Encoder(Nms, Fs) {
     let ac_ctx = new Array(ACCTXMEMN);
     let lsbs = new Array(3200);
 
+    let xs_clipped = new Array(NF);
+
     //
     //  Public methods.
     //
@@ -3626,7 +3636,7 @@ function LC3Encoder(Nms, Fs) {
      *    - Frame size mismatches, or 
      *    - Byte count is not within specific range (20 <= nbytes <= 400), or 
      *    - Length of the buffer (i.e. bytesbuf) is smaller than the byte count.
-     *  @param {Number[]} xs 
+     *  @param {Number[]|Int16Array} xs 
      *    - The frame.
      *  @param {Number} nbytes
      *    - The byte count.
@@ -3664,14 +3674,20 @@ function LC3Encoder(Nms, Fs) {
         }
 
         //  Clip the input signal (Eq. 5).
-        for (let n = 0; n < NF; ++n) {
-            let tmp = xs[n];
-            if (tmp > 32767) {
-                xs[n] = 32767;
-            } else if (tmp < -32768) {
-                xs[n] = -32768;
-            } else {
-                //  Nothing.
+        if (typeof(Int16Array) != "undefined" && (xs instanceof Int16Array)) {
+            for (let n = 0; n < NF; ++n) {
+                xs_clipped[n] = xs[n];
+            }
+        } else {
+            for (let n = 0; n < NF; ++n) {
+                let tmp = xs[n];
+                if (tmp > 32767) {
+                    xs_clipped[n] = 32767;
+                } else if (tmp < -32768) {
+                    xs_clipped[n] = -32768;
+                } else {
+                    xs_clipped[n] = tmp;
+                }
             }
         }
 
@@ -3679,7 +3695,7 @@ function LC3Encoder(Nms, Fs) {
         let nbits = ((nbytes << 3) >>> 0);
 
         //  Low Delay MDCT analysis (3.3.4).
-        mdct.update(xs);
+        mdct.update(xs_clipped);
         let nn_flag = mdct.getNearNyquistFlag();
         // console.log("near_nyquist_flag=" + nn_flag.toString());
         let X = mdct.getSpectralCoefficients();
@@ -3694,7 +3710,7 @@ function LC3Encoder(Nms, Fs) {
         // console.log("nbitsBW=" + nbitsBW.toString());
 
         //  Time domain sttack detector (3.3.6).
-        akdet.update(xs, nbytes);
+        akdet.update(xs_clipped, nbytes);
         let F_att = akdet.getAttackFlag();
         // console.log("F_att=" + F_att.toString());
 
@@ -3734,7 +3750,7 @@ function LC3Encoder(Nms, Fs) {
         // console.log("Xf[]=" + Xf.toString());
 
         //  Long Term Postfilter (3.3.9).
-        ltpf_enc.update(xs, nbits, nn_flag);
+        ltpf_enc.update(xs_clipped, nbits, nn_flag);
         ltpf_enc.getEncoderParameters(ltpf_enc_param_buf);
         let nbitsLTPF = ltpf_enc_param_buf[0];
         // console.log("nbitsLTPF=" + nbitsLTPF.toString());
@@ -13796,6 +13812,19 @@ function LC3IllegalIndexError(message = "") {
     LC3Error.call(this, message);
 }
 
+/**
+ *  LC3 illegal operation error.
+ * 
+ *  @constructor
+ *  @extends {LC3Error}
+ *  @param {String} [message]
+ *      - The message.
+ */
+function LC3IllegalOperationError(message = "") {
+    //  Let parent class initialize.
+    LC3Error.call(this, message);
+}
+
 //
 //  Inheritances.
 //
@@ -13803,16 +13832,18 @@ Inherits(LC3Error, Error);
 Inherits(LC3BugError, LC3Error);
 Inherits(LC3IllegalParameterError, LC3Error);
 Inherits(LC3IllegalIndexError, LC3Error);
+Inherits(LC3IllegalOperationError, LC3Error);
 
 //  Export public APIs.
 module.exports = {
     "LC3Error": LC3Error,
     "LC3BugError": LC3BugError,
     "LC3IllegalParameterError": LC3IllegalParameterError,
-    "LC3IllegalIndexError": LC3IllegalIndexError
+    "LC3IllegalIndexError": LC3IllegalIndexError,
+    "LC3IllegalOperationError": LC3IllegalOperationError
 };
     },
-    "library/api": function(module, require) {
+    "browser/src/api": function(module, require) {
 //
 //  Copyright 2021 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
@@ -13825,17 +13856,17 @@ module.exports = {
 
 //  Imported modules.
 const Lc3Fs = 
-    require("./../lc3/common/fs");
+    require("./../../lc3/common/fs");
 const Lc3Nms = 
-    require("./../lc3/common/nms");
+    require("./../../lc3/common/nms");
 const Lc3EcEncoder = 
-    require("./../lc3/encoder/encoder");
+    require("./../../lc3/encoder/encoder");
 const Lc3DcDecoder = 
-    require("./../lc3/decoder/decoder");
+    require("./../../lc3/decoder/decoder");
 const Lc3DcBec = 
-    require("./../lc3/decoder/bec");
+    require("./../../lc3/decoder/bec");
 const Lc3Error = 
-    require("./../lc3/error");
+    require("./../../lc3/error");
 
 //  Imported classes.
 const LC3SampleRate = 
