@@ -5159,14 +5159,13 @@
       }
 
       fft.transform(B_RE, B_IM);
+      var A_RE = new Array(M);
+      var A_IM = new Array(M);
 
       this.transform = function (x_re, x_im) {
         if (x_re.length != N || x_im.length != N) {
           throw new LC3IllegalParameterError("Incorrect block size.");
         }
-
-        var A_RE = new Array(M);
-        var A_IM = new Array(M);
 
         for (var _n36 = 0; _n36 < N; ++_n36) {
           var xn_re = x_re[_n36],
@@ -5258,7 +5257,16 @@
                 wNr_i = 0.0;
 
             for (var p = off, pend = off + pow_2_ss1, q = pend; p < pend; ++p, ++q) {
-              FFTCooleyTukeyTransform2P(x_re, x_im, p, q, wNr_r, wNr_i);
+              var p_r = x_re[p],
+                  p_i = x_im[p];
+              var q_r = x_re[q],
+                  q_i = x_im[q];
+              var t_r = q_r * wNr_r - q_i * wNr_i,
+                  t_i = q_r * wNr_i + q_i * wNr_r;
+              x_re[p] = p_r + t_r;
+              x_im[p] = p_i + t_i;
+              x_re[q] = p_r - t_r;
+              x_im[q] = p_i - t_i;
               var wNr_r_next = wNr_r * wNs_r - wNr_i * wNs_i;
               var wNr_i_next = wNr_r * wNs_i + wNr_i * wNs_r;
               wNr_r = wNr_r_next;
@@ -5267,19 +5275,6 @@
           }
         }
       };
-    }
-
-    function FFTCooleyTukeyTransform2P(re, im, p, q, wNr_r, wNr_i) {
-      var p_r = re[p],
-          p_i = im[p];
-      var q_r = re[q],
-          q_i = im[q];
-      var t_r = q_r * wNr_r - q_i * wNr_i,
-          t_i = q_r * wNr_i + q_i * wNr_r;
-      re[p] = p_r + t_r;
-      im[p] = p_i + t_i;
-      re[q] = p_r - t_r;
-      im[q] = p_i - t_i;
     }
 
     function FFTArraySwap2(arr1, arr2, i1, i2) {
@@ -5296,11 +5291,11 @@
         return;
       }
 
-      var m = nbits >> 1;
+      var m = nbits >>> 1;
       var mp1 = m + 1;
       var inv = (1 << nbits >>> 0) - 1;
       var pow_2_m = 1 << m >>> 0;
-      var pow_2_ms1 = pow_2_m >> 1;
+      var pow_2_ms1 = pow_2_m >>> 1;
 
       if ((nbits & 1) >>> 0 == 0) {
         for (var a = 0; a < pow_2_ms1; ++a) {
@@ -5308,7 +5303,7 @@
             var i = (b << m >>> 0) + brv_m[a];
             var ri = (a << m >>> 0) + brv_m[b];
             FFTArraySwap2(arr1, arr2, i, ri);
-            FFTArraySwap2(arr1, arr2, inv ^ ri, inv ^ i);
+            FFTArraySwap2(arr1, arr2, (inv ^ ri) >>> 0, (inv ^ i) >>> 0);
           }
         }
 
@@ -5329,11 +5324,11 @@
             var _ri2 = (_a2 << mp1 >>> 0) + brv_m[_b7];
 
             FFTArraySwap2(arr1, arr2, _i10, _ri2);
-            FFTArraySwap2(arr1, arr2, inv ^ _ri2, inv ^ _i10);
+            FFTArraySwap2(arr1, arr2, (inv ^ _ri2) >>> 0, (inv ^ _i10) >>> 0);
             _i10 += pow_2_m;
             _ri2 += pow_2_m;
             FFTArraySwap2(arr1, arr2, _i10, _ri2);
-            FFTArraySwap2(arr1, arr2, inv ^ _ri2, inv ^ _i10);
+            FFTArraySwap2(arr1, arr2, (inv ^ _ri2) >>> 0, (inv ^ _i10) >>> 0);
           }
         }
 
@@ -5540,26 +5535,40 @@
       }
 
       var N = M << 1 >>> 0;
-      var PiDivN = Math.PI / N;
       var Ns1 = N - 1;
-      var fft = new FFT(N);
-      var M0 = 0.5 + M / 2;
-      var egf = (M & 1) == 0 ? -1 : 1;
-      var PRETW_re = new Array(N);
-      var PRETW_im = new Array(N);
-      var PSTW_re = new Array(N);
-      var PSTW_im = new Array(N);
+      var Ms1 = M - 1;
+      var Xp = new Array(N);
+      var Z_re = new Array(M);
+      var Z_im = new Array(M);
+      var A_re = new Array(N);
+      var A_im = new Array(N);
+      var fft = new FFT(M);
+      var TW1_re = new Array(M);
+      var TW1_im = new Array(M);
 
-      for (var n = 0; n < N; ++n) {
-        var phi = n * M0 * 2 * PiDivN;
-        PRETW_re[n] = Math.cos(phi);
-        PRETW_im[n] = Math.sin(phi);
-        phi = (n + M0) * PiDivN;
-        PSTW_re[n] = Math.cos(phi);
-        PSTW_im[n] = Math.sin(phi);
+      for (var k = 0; k < M; ++k) {
+        var phi = k * Math.PI / M;
+        TW1_re[k] = 0.25 * Math.cos(phi);
+        TW1_im[k] = 0.25 * Math.sin(phi);
       }
 
-      var Xp_im = new Array(N);
+      var TW2_re = new Array(M);
+      var TW2_im = new Array(M);
+
+      for (var n = 0; n < M; ++n) {
+        var _phi = (n + 0.5) * Math.PI / M;
+
+        TW2_re[n] = Math.cos(_phi);
+        TW2_im[n] = Math.sin(_phi);
+      }
+
+      var TW3_re = new Array(N);
+      var TW3_im = new Array(N);
+
+      for (var _n40 = 0, c = Math.PI / N, _phi2 = 0.5 * (M + 1) * c; _n40 < N; ++_n40, _phi2 += c) {
+        TW3_re[_n40] = Math.cos(_phi2);
+        TW3_im[_n40] = Math.sin(_phi2);
+      }
 
       this.transform = function (X, Y) {
         if (X.length != M) {
@@ -5570,25 +5579,50 @@
           throw new LC3IllegalParameterError("Output block size is not twice of the unit size.");
         }
 
-        var Xp_re = Y;
+        var Xp_factor = (M & 1) != 0 ? 1 : -1;
 
-        for (var k = 0; k < M; ++k) {
-          var Xk = X[k];
-          Xp_re[k] = Xk * PRETW_re[k];
-          Xp_im[k] = Xk * PRETW_im[k];
-          var p = Ns1 - k;
-          Xp_re[p] = egf * Xk * PRETW_re[p];
-          Xp_im[p] = egf * Xk * PRETW_im[p];
+        for (var k1 = 0, k2 = Ns1; k1 < M; ++k1, --k2) {
+          Xp[k1] = X[k1];
+          Xp[k2] = Xp_factor * X[k1];
         }
 
-        fft.transformInverse(Xp_re, Xp_im);
+        var Xm_factor = 1;
 
-        for (var _k62 = 0; _k62 < N; ++_k62) {
-          var a_re = Xp_re[_k62],
-              a_im = Xp_im[_k62];
-          var tw_re = PSTW_re[_k62];
-          var tw_im = PSTW_im[_k62];
-          Xp_re[_k62] = a_re * tw_re - a_im * tw_im;
+        for (var _k62 = 0, u = 0; _k62 < M; ++_k62, u += 2) {
+          var a_re = Xm_factor * Xp[u],
+              a_im = Xm_factor * Xp[u + 1];
+          var b_re = TW1_re[_k62],
+              b_im = TW1_im[_k62];
+          Z_re[_k62] = a_re * b_re - a_im * b_im;
+          Z_im[_k62] = a_re * b_im + a_im * b_re;
+          Xm_factor = -Xm_factor;
+        }
+
+        fft.transformInverse(Z_re, Z_im);
+
+        for (var _k63 = 0, _k64 = Ms1, k3 = M; _k63 < M; ++_k63, --_k64, ++k3) {
+          var z1_re = Z_re[_k63],
+              z1_im = Z_im[_k63];
+          var z2_re = Z_re[_k64],
+              z2_im = Z_im[_k64];
+          var A_even_re = z1_re + z2_re;
+          var A_even_im = z1_im - z2_im;
+
+          var _a_re2 = z1_re - z2_re,
+              _a_im2 = z1_im + z2_im;
+
+          var _b_re = TW2_re[_k63],
+              _b_im = TW2_im[_k63];
+          var A_odd_re = _a_re2 * _b_re - _a_im2 * _b_im;
+          var A_odd_im = _a_re2 * _b_im + _a_im2 * _b_re;
+          A_re[_k63] = A_even_re + A_odd_re;
+          A_im[_k63] = A_even_im + A_odd_im;
+          A_re[k3] = A_even_re - A_odd_re;
+          A_im[k3] = A_even_im - A_odd_im;
+        }
+
+        for (var _n41 = 0; _n41 < N; ++_n41) {
+          Y[_n41] = TW3_re[_n41] * A_re[_n41] - TW3_im[_n41] * A_im[_n41];
         }
       };
     }
@@ -5634,8 +5668,8 @@
 
         _Arow[0] = 0;
 
-        for (var _k63 = 1; _k63 <= Kmax; ++_k63) {
-          _Arow[_k63] = Aprevrow[_k63 - 1] + Aprevrow[_k63] + _Arow[_k63 - 1];
+        for (var _k65 = 1; _k65 <= Kmax; ++_k65) {
+          _Arow[_k65] = Aprevrow[_k65 - 1] + Aprevrow[_k65] + _Arow[_k65 - 1];
         }
 
         MPVQ_offsets[n] = _Arow;
@@ -5654,7 +5688,7 @@
         var next_sign_ind = 0;
         var got_sign_flag = false;
 
-        for (var pos = N - 1, _n40 = 0; pos >= 0; --pos, ++_n40) {
+        for (var pos = N - 1, _n42 = 0; pos >= 0; --pos, ++_n42) {
           var val = X[pos];
 
           if (val != 0 && got_sign_flag) {
@@ -5669,7 +5703,7 @@
             next_sign_ind = 1;
           }
 
-          index += MPVQ_offsets[_n40][k_acc];
+          index += MPVQ_offsets[_n42][k_acc];
           k_acc += Math.abs(val);
 
           if (k_acc > Kmax) {
@@ -5713,13 +5747,13 @@
           LS_ind = -1;
         }
 
-        for (var _n41 = 0; _n41 < N; ++_n41) {
-          vec[_n41] = 0;
+        for (var _n43 = 0; _n43 < N; ++_n43) {
+          vec[_n43] = 0;
         }
 
         var k_max_local = K;
 
-        for (var pos = 0, _n42 = N - 1; pos < N; ++pos, --_n42) {
+        for (var pos = 0, _n44 = N - 1; pos < N; ++pos, --_n44) {
           if (index == 0) {
             if (LS_ind < 0) {
               vec[pos] = -k_max_local;
@@ -5741,7 +5775,7 @@
             }
 
             mid >>>= 1;
-            var amp_offset = MPVQ_offsets[_n42][mid];
+            var amp_offset = MPVQ_offsets[_n44][mid];
 
             if (amp_offset > index) {
               high = mid - 1;
@@ -5751,7 +5785,7 @@
           }
 
           var k_delta = k_max_local - low;
-          index -= MPVQ_offsets[_n42][low];
+          index -= MPVQ_offsets[_n44][low];
 
           if (k_delta != 0) {
               if (LS_ind < 0) {
