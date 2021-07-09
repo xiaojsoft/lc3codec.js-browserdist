@@ -4610,12 +4610,10 @@ const Lc3IntUtil =
     require("./../common/int_util");
 const Lc3SlideWin = 
     require("./../common/slide_window");
-const Lc3ArrayUtil = 
-    require("./../common/array_util");
 const Lc3LtpfCommon = 
     require("./../common/ltpf-common");
-const Lc3Fft = 
-    require("./../math/fft");
+const Lc3FftTfmCooleyTukey = 
+    require("./../math/fft-tfm-cooleytukey");
 const Lc3TblLtpf = 
     require("./../tables/ltpf");
 const Lc3TblNF = 
@@ -4632,14 +4630,12 @@ const LC3SampleRate =
     Lc3Fs.LC3SampleRate;
 const LC3SlideWindow = 
     Lc3SlideWin.LC3SlideWindow;
-const FFT = 
-    Lc3Fft.FFT;
+const FFTCooleyTukeyTransformer = 
+    Lc3FftTfmCooleyTukey.FFTCooleyTukeyTransformer;
 
 //  Imported functions.
 const GetGainParameters = 
     Lc3LtpfCommon.GetGainParameters;
-const ArrayFlip = 
-    Lc3ArrayUtil.ArrayFlip;
 const IntDiv = 
     Lc3IntUtil.IntDiv;
 
@@ -4775,8 +4771,22 @@ function LC3LongTermPostfilter(Nms, Fs) {
     let buf_downsamp = new Array(5);
     let buf_resamp = new Array(reslen);
 
-    let R6p4_corrfft_size = KWIDTH + len6p4 - 1;
-    let R6p4_corrfft = new FFT(R6p4_corrfft_size);
+    let R6p4_corrfft_nstage;
+    let R6p4_corrfft_size;
+    {
+        let R6p4_corrfft_size_min = KWIDTH + len6p4 - 1;
+        R6p4_corrfft_nstage = 1;
+        R6p4_corrfft_size = 2;
+        while (R6p4_corrfft_size < R6p4_corrfft_size_min) {
+            R6p4_corrfft_size = ((R6p4_corrfft_size << 1) >>> 0);
+            ++(R6p4_corrfft_nstage);
+        }
+    }
+    let R6p4_corrfft = new FFTCooleyTukeyTransformer(R6p4_corrfft_nstage);
+    let R6p4_corrfft_c0 = KWIDTH - 1;
+    let R6p4_corrfft_c1 = R6p4_corrfft_size - R6p4_corrfft_c0;
+    let R6p4_corrfft_c2 = -KMIN;
+    let R6p4_corrfft_c3 = 1 - KWIDTH  - KMIN;
     let R6p4_corrwin1_re = new Array(R6p4_corrfft_size);
     let R6p4_corrwin1_im = new Array(R6p4_corrfft_size);
     let R6p4_corrwin2_re = new Array(R6p4_corrfft_size);
@@ -4925,32 +4935,52 @@ function LC3LongTermPostfilter(Nms, Fs) {
             //  Eq. 86
             //
             //  The description of the algorithm below can be found at:
-            //  https://drive.google.com/file/d/1VrbLWjN4ZI1HpYDhpYuDfglhXoQnqUed/
-            x6p4_win.bulkGet(R6p4_corrwin1_re, 0, 0, len6p4);
-            x6p4_win.bulkGet(R6p4_corrwin2_re, 0, 1 - KWIDTH - KMIN, KWIDTH);
-            x6p4_win.bulkGet(R6p4_corrwin2_re, KWIDTH, 1 - KMIN, len6p4 - 1);
-            ArrayFlip(R6p4_corrwin2_re, 0, KWIDTH);
-            ArrayFlip(R6p4_corrwin2_re, KWIDTH, R6p4_corrfft_size);
-            for (let k = 0; k < len6p4; ++k) {
-                R6p4_corrwin1_im[k] = 0;
-                R6p4_corrwin2_im[k] = 0;
+            //    [1] https://drive.google.com/file/d/1hF1z5vzoi8aLao8--JGAraRYBwuugFIv/
+            x6p4_win.bulkGet(
+                R6p4_corrwin1_re, 
+                0, 
+                0, 
+                len6p4
+            );
+            x6p4_win.bulkGet(
+                R6p4_corrwin2_re, 
+                0, 
+                R6p4_corrfft_c2, 
+                len6p4
+            );
+            x6p4_win.bulkGet(
+                R6p4_corrwin2_re, 
+                R6p4_corrfft_c1, 
+                R6p4_corrfft_c3, 
+                R6p4_corrfft_c0
+            );
+            for (let n = 0; n < len6p4; ++n) {
+                R6p4_corrwin1_im[n] = 0;
+                R6p4_corrwin2_im[n] = 0;
             }
-            for (let k = len6p4; k < R6p4_corrfft_size; ++k) {
-                R6p4_corrwin1_re[k] = 0;
-                R6p4_corrwin1_im[k] = 0;
-                R6p4_corrwin2_im[k] = 0;
+            for (let n = len6p4; n < R6p4_corrfft_c1; ++n) {
+                R6p4_corrwin1_re[n] = 0;
+                R6p4_corrwin1_im[n] = 0;
+                R6p4_corrwin2_re[n] = 0;
+                R6p4_corrwin2_im[n] = 0;
+            }
+            for (let n = R6p4_corrfft_c1; n < R6p4_corrfft_size; ++n) {
+                R6p4_corrwin1_re[n] = 0;
+                R6p4_corrwin1_im[n] = 0;
+                R6p4_corrwin2_im[n] = 0;
             }
             R6p4_corrfft.transform(R6p4_corrwin1_re, R6p4_corrwin1_im);
             R6p4_corrfft.transform(R6p4_corrwin2_re, R6p4_corrwin2_im);
             for (let k = 0; k < R6p4_corrfft_size; ++k) {
-                let a_re = R6p4_corrwin1_re[k], a_im = R6p4_corrwin1_im[k];
+                let a_re = R6p4_corrwin1_re[k], a_im = -R6p4_corrwin1_im[k];
                 let b_re = R6p4_corrwin2_re[k], b_im = R6p4_corrwin2_im[k];
-                R6p4_corrwin1_re[k] = a_re * b_re - a_im * b_im;
-                R6p4_corrwin1_im[k] = a_re * b_im + a_im * b_re;
+                R6p4_corrwin1_re[k] = (a_re * b_re - a_im * b_im) / R6p4_corrfft_size;
+                R6p4_corrwin1_im[k] = (a_re * b_im + a_im * b_re) / R6p4_corrfft_size;
             }
-            R6p4_corrfft.transformInverse(R6p4_corrwin1_re, R6p4_corrwin1_im);
+            R6p4_corrfft.transform(R6p4_corrwin1_re, R6p4_corrwin1_im);
 
             R6p4 = R6p4_corrwin1_re;
+            // console.log("R6p4[]=" + R6p4.slice(0, KWIDTH).toString());
         }
 
         {
@@ -5757,6 +5787,8 @@ function LC3SpectralNoiseShapingEncoder(Nms, Fs) {
     let t2rot_setA = new Array(10);
     let t2rot_setB = new Array(6);
 
+    let pvq_cache_s = new Array(16);
+
     let sns_y0_setA = new Array(10);
     let sns_y0_setB = new Array(6);
     let sns_y0 = new Array(16);
@@ -6424,11 +6456,11 @@ function LC3SpectralNoiseShapingEncoder(Nms, Fs) {
 
         //  Shape candidates (3.3.6.3.3.4).
         {
-            PVQSearch(10, 10, t2rot_setA, sns_y0_setA);
-            PVQSearch( 6,  1, t2rot_setB, sns_y0_setB);
-            // PVQSearch(10, 10, t2rot_setA, sns_y1_setA);
-            PVQSearch(16,  8,      t2rot,      sns_y2);
-            PVQSearch(16,  6,      t2rot,      sns_y3);
+            PVQSearch(10, 10, t2rot_setA, sns_y0_setA, pvq_cache_s);
+            PVQSearch( 6,  1, t2rot_setB, sns_y0_setB, pvq_cache_s);
+            // PVQSearch(10, 10, t2rot_setA, sns_y1_setA, pvq_cache_s);
+            PVQSearch(16,  8,      t2rot,      sns_y2, pvq_cache_s);
+            PVQSearch(16,  6,      t2rot,      sns_y3, pvq_cache_s);
 
             sns_y0[ 0] = sns_y0_setA[0];
             sns_y0[ 1] = sns_y0_setA[1];
@@ -8037,7 +8069,7 @@ const LC3IllegalParameterError = Lc3Error.LC3IllegalParameterError;
  * 
  *  Note(s):
  *    [1] The description algorithm used here can be downloaded from:
- *        https://drive.google.com/file/d/1ud9FRlrhxiSA0QxsL4JBgU0iBpifMm_6/
+ *        https://drive.google.com/file/d/1ESvZy5U__Uir3hePc3CGgHdBmflf47jA/
  * 
  *  @param {Number} nbits
  *    - The bit count (0 <= `nbits` < 32).
@@ -8460,7 +8492,7 @@ function FFTArraySwap2(arr1, arr2, i1, i2) {
  * 
  *  Note(s):
  *    [1] The description algorithm used here can be downloaded from:
- *        https://drive.google.com/file/d/1ud9FRlrhxiSA0QxsL4JBgU0iBpifMm_6/
+ *        https://drive.google.com/file/d/1ESvZy5U__Uir3hePc3CGgHdBmflf47jA/
  * 
  *  @param {Number[]} arr1 
  *    - The first array.
@@ -8482,7 +8514,7 @@ function FFTArrayBitReversalShuffle2(arr1, arr2, nbits, brv_m) {
     let pow_2_m = ((1 << m) >>> 0);
     let pow_2_ms1 = (pow_2_m >>> 1);
     if (((nbits & 1) >>> 0) == 0) {
-        for (let a = 0; a < pow_2_ms1; ++a) {
+        for (let a = 1; a < pow_2_ms1; ++a) {
             for (let b = 0; b < a; ++b) {
                 let i = ((b << m) >>> 0) + brv_m[a];
                 let ri = ((a << m) >>> 0) + brv_m[b];
@@ -8498,7 +8530,7 @@ function FFTArrayBitReversalShuffle2(arr1, arr2, nbits, brv_m) {
             }
         }
     } else {
-        for (let a = 0; a < pow_2_ms1; ++a) {
+        for (let a = 1; a < pow_2_ms1; ++a) {
             for (let b = 0; b < a; ++b) {
                 let i = ((b << mp1) >>> 0) + brv_m[a];
                 let ri = ((a << mp1) >>> 0) + brv_m[b];
@@ -9454,7 +9486,8 @@ const IsUInt32 =
  *    - N is not an unsigned 32-bit integer, or 
  *    - K is not a non-negative integer, or 
  *    - Vector size mismatches (with N), or 
- *    - Point buffer size mismatches (with N).
+ *    - Point buffer size mismatches (with N), or 
+ *    - Sign buffer size is too small (lower than N).
  *  @param {Number} N 
  *    - The parameter N.
  *  @param {Number} K 
@@ -9464,10 +9497,12 @@ const IsUInt32 =
  *  @param {?(Number[])} [R]
  *    - The point buffer (used for reducing array allocation, set to NULL if 
  *      not needed).
+ *  @param {Number[]} [S]
+ *    - The sign buffer.
  *  @returns {Number[]}
  *    - The point within PVQ(N, K).
  */
-function PVQSearch(N, K, X, R = null) {
+function PVQSearch(N, K, X, R = null, S = new Array(N)) {
     //  Check N.
     if (!IsUInt32(N)) {
         throw new LC3IllegalParameterError(
@@ -9501,8 +9536,14 @@ function PVQSearch(N, K, X, R = null) {
         R = new Array(N);
     }
 
+    //  Check the size of S.
+    if (S.length < N) {
+        throw new LC3IllegalParameterError(
+            "Sign buffer size is too small (lower than N)."
+        );
+    }
+
     //  Prepare S[n] = sgn(X[n]), XabsSum = sum(|X[n]|).
-    let S = new Array(N);
     let XabsSum = 0;
     for (let i = 0; i < N; ++i) {
         if (X[i] < 0) {
@@ -9517,7 +9558,7 @@ function PVQSearch(N, K, X, R = null) {
     //  Preproject (when K/N > 0.5).
     let k_begin = 0;
     let C_last = 0, E_last = 0;
-    if (2 * K > N) {
+    if (2 * K > N && XabsSum >= 1E-2) {
         let factor = (K - 1) / XabsSum;
         for (let i = 0; i < N; ++i) {
             let Ri = Math.floor(X[i] * factor);
@@ -9525,6 +9566,16 @@ function PVQSearch(N, K, X, R = null) {
             C_last += X[i] * Ri;
             E_last += Ri * Ri;
             k_begin += Ri;
+        }
+        if (k_begin >= K) {
+            //  For security, undo preprojection if the count of preprojected 
+            //  pulses is not less than K.
+            k_begin = 0;
+            C_last = 0;
+            E_last = 0;
+            for (let i = 0; i < N; ++i) {
+                R[i] = 0;
+            }
         }
     } else {
         for (let i = 0; i < N; ++i) {
