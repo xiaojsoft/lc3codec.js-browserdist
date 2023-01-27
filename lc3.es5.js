@@ -1320,7 +1320,7 @@
     var LDEN_TBL = [4, 4, 6, 8, 12, 12];
     var TAB_LTPF_NUM_TBL = [TAB_LTPF_NUM_8000, TAB_LTPF_NUM_16000, TAB_LTPF_NUM_24000, TAB_LTPF_NUM_32000, TAB_LTPF_NUM_48000, TAB_LTPF_NUM_48000];
     var TAB_LTPF_DEN_TBL = [TAB_LTPF_DEN_8000, TAB_LTPF_DEN_16000, TAB_LTPF_DEN_24000, TAB_LTPF_DEN_32000, TAB_LTPF_DEN_48000, TAB_LTPF_DEN_48000];
-    var X_LTPF_HAT_WIN_HISTORY_SIZE = [[300, 300, 300, 320, 480, 480], [300, 300, 360, 480, 720, 720]];
+    var X_LTPF_HAT_WIN_HISTORY_SIZE = [[300, 300, 460, 600, 880, 880], [300, 300, 460, 600, 880, 880]];
 
     function LC3LongTermPostfilterDecoder(Nms, Fs) {
       var index_Nms = Nms.getInternalIndex();
@@ -1636,6 +1636,8 @@
 
     var Lc3TblSns = require("./../tables/sns");
 
+    var Lc3Dct2_16 = require("./../math/dct2-16");
+
     var Lc3Pvq = require("./../math/pvq");
 
     var Lc3Mpvq = require("./../math/mpvq");
@@ -1647,10 +1649,10 @@
     var MPVQ = Lc3Mpvq.MPVQ;
     var LC3BugError = Lc3Error.LC3BugError;
     var PVQNormalize = Lc3Pvq.PVQNormalize;
+    var DCTIIInverse_16 = Lc3Dct2_16.DCTIIInverse_16;
     var NB_TBL = Lc3TblNB.NB_TBL;
     var NF_TBL = Lc3TblNF.NF_TBL;
     var I_TBL = Lc3TblI.I_TBL;
-    var DCTII_16x16 = Lc3TblSns.DCTII_16x16;
     var HFCB = Lc3TblSns.HFCB;
     var LFCB = Lc3TblSns.LFCB;
     var GIJ = Lc3TblSns.GIJ;
@@ -1775,16 +1777,41 @@
         }
         {
           var G = GIJ[shape_j][gain_i];
-
-          for (var n = 0; n < 16; ++n) {
-            var tmp = 0;
-
-            for (var col = 0; col < 16; ++col) {
-              tmp += xq_shape_j[col] * DCTII_16x16[n][col];
-            }
-
-            scfQ[n] = st1[n] + G * tmp;
-          }
+          var c1 = 0.25 * G,
+              c2 = 0.3535533905932738 * G;
+          scfQ[0] = xq_shape_j[0] * c1;
+          scfQ[1] = xq_shape_j[1] * c2;
+          scfQ[2] = xq_shape_j[2] * c2;
+          scfQ[3] = xq_shape_j[3] * c2;
+          scfQ[4] = xq_shape_j[4] * c2;
+          scfQ[5] = xq_shape_j[5] * c2;
+          scfQ[6] = xq_shape_j[6] * c2;
+          scfQ[7] = xq_shape_j[7] * c2;
+          scfQ[8] = xq_shape_j[8] * c2;
+          scfQ[9] = xq_shape_j[9] * c2;
+          scfQ[10] = xq_shape_j[10] * c2;
+          scfQ[11] = xq_shape_j[11] * c2;
+          scfQ[12] = xq_shape_j[12] * c2;
+          scfQ[13] = xq_shape_j[13] * c2;
+          scfQ[14] = xq_shape_j[14] * c2;
+          scfQ[15] = xq_shape_j[15] * c2;
+          DCTIIInverse_16(scfQ, scfQ);
+          scfQ[0] += st1[0];
+          scfQ[1] += st1[1];
+          scfQ[2] += st1[2];
+          scfQ[3] += st1[3];
+          scfQ[4] += st1[4];
+          scfQ[5] += st1[5];
+          scfQ[6] += st1[6];
+          scfQ[7] += st1[7];
+          scfQ[8] += st1[8];
+          scfQ[9] += st1[9];
+          scfQ[10] += st1[10];
+          scfQ[11] += st1[11];
+          scfQ[12] += st1[12];
+          scfQ[13] += st1[13];
+          scfQ[14] += st1[14];
+          scfQ[15] += st1[15];
         }
         {
           var t1, t2;
@@ -3372,6 +3399,8 @@
 
     var Lc3TblSns = require("./../tables/sns");
 
+    var Lc3Dct2_16 = require("./../math/dct2-16");
+
     var Lc3Pvq = require("./../math/pvq");
 
     var Lc3Mpvq = require("./../math/mpvq");
@@ -3385,10 +3414,11 @@
     var MPVQ = Lc3Mpvq.MPVQ;
     var PVQSearch = Lc3Pvq.PVQSearch;
     var PVQNormalize = Lc3Pvq.PVQNormalize;
+    var DCTIIForward_16 = Lc3Dct2_16.DCTIIForward_16;
+    var DCTIIInverse_16 = Lc3Dct2_16.DCTIIInverse_16;
     var I_TBL = Lc3TblIfs.I_TBL;
     var NF_TBL = Lc3TblNF.NF_TBL;
     var NB_TBL = Lc3TblNB.NB_TBL;
-    var DCTII_16x16 = Lc3TblSns.DCTII_16x16;
     var HFCB = Lc3TblSns.HFCB;
     var LFCB = Lc3TblSns.LFCB;
     var GIJ = Lc3TblSns.GIJ;
@@ -3914,22 +3944,30 @@
           r1[15] = scf[15] - st1[15];
         }
         {
-          for (var _n22 = 0; _n22 < 16; ++_n22) {
-            var _tmp12 = 0;
+          DCTIIForward_16(r1, t2rot);
+          t2rot[0] *= 0.25;
+          t2rot[1] *= 0.3535533905932738;
+          t2rot[2] *= 0.3535533905932738;
+          t2rot[3] *= 0.3535533905932738;
+          t2rot[4] *= 0.3535533905932738;
+          t2rot[5] *= 0.3535533905932738;
+          t2rot[6] *= 0.3535533905932738;
+          t2rot[7] *= 0.3535533905932738;
+          t2rot[8] *= 0.3535533905932738;
+          t2rot[9] *= 0.3535533905932738;
+          t2rot[10] *= 0.3535533905932738;
+          t2rot[11] *= 0.3535533905932738;
+          t2rot[12] *= 0.3535533905932738;
+          t2rot[13] *= 0.3535533905932738;
+          t2rot[14] *= 0.3535533905932738;
+          t2rot[15] *= 0.3535533905932738;
 
-            for (var row = 0; row < 16; ++row) {
-              _tmp12 += r1[row] * DCTII_16x16[row][_n22];
-            }
-
-            t2rot[_n22] = _tmp12;
+          for (var _n22 = 0; _n22 < 10; ++_n22) {
+            t2rot_setA[_n22] = t2rot[_n22];
           }
 
-          for (var _n23 = 0; _n23 < 10; ++_n23) {
-            t2rot_setA[_n23] = t2rot[_n23];
-          }
-
-          for (var _n24 = 10, _i6 = 0; _n24 < 16; ++_n24, ++_i6) {
-            t2rot_setB[_i6] = t2rot[_n24];
+          for (var _n23 = 10, _i6 = 0; _n23 < 16; ++_n23, ++_i6) {
+            t2rot_setB[_i6] = t2rot[_n23];
           }
         }
         {
@@ -3984,41 +4022,41 @@
             for (var _i7 = 0, ngains = gains.length; _i7 < ngains; ++_i7) {
               var gain = gains[_i7];
 
-              var _tmp13 = void 0;
+              var _tmp12 = void 0;
 
               var dMSE = void 0;
-              _tmp13 = t2rot[0] - gain * vec[0];
-              dMSE = _tmp13 * _tmp13;
-              _tmp13 = t2rot[1] - gain * vec[1];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[2] - gain * vec[2];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[3] - gain * vec[3];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[4] - gain * vec[4];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[5] - gain * vec[5];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[6] - gain * vec[6];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[7] - gain * vec[7];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[8] - gain * vec[8];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[9] - gain * vec[9];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[10] - gain * vec[10];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[11] - gain * vec[11];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[12] - gain * vec[12];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[13] - gain * vec[13];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[14] - gain * vec[14];
-              dMSE += _tmp13 * _tmp13;
-              _tmp13 = t2rot[15] - gain * vec[15];
-              dMSE += _tmp13 * _tmp13;
+              _tmp12 = t2rot[0] - gain * vec[0];
+              dMSE = _tmp12 * _tmp12;
+              _tmp12 = t2rot[1] - gain * vec[1];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[2] - gain * vec[2];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[3] - gain * vec[3];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[4] - gain * vec[4];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[5] - gain * vec[5];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[6] - gain * vec[6];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[7] - gain * vec[7];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[8] - gain * vec[8];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[9] - gain * vec[9];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[10] - gain * vec[10];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[11] - gain * vec[11];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[12] - gain * vec[12];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[13] - gain * vec[13];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[14] - gain * vec[14];
+              dMSE += _tmp12 * _tmp12;
+              _tmp12 = t2rot[15] - gain * vec[15];
+              dMSE += _tmp12 * _tmp12;
 
               if (dMSE < dMSE_min) {
                 dMSE_min = dMSE;
@@ -4084,16 +4122,41 @@
         {
           var _vec = sns_xq[shape_j];
           var _gain = GIJ[shape_j][gain_i];
-
-          for (var _n25 = 0; _n25 < 16; ++_n25) {
-            var scfQ_n = st1[_n25];
-
-            for (var col = 0; col < 16; ++col) {
-              scfQ_n += _gain * _vec[col] * DCTII_16x16[_n25][col];
-            }
-
-            scfQ[_n25] = scfQ_n;
-          }
+          var c1 = 0.25 * _gain,
+              c2 = 0.3535533905932738 * _gain;
+          scfQ[0] = _vec[0] * c1;
+          scfQ[1] = _vec[1] * c2;
+          scfQ[2] = _vec[2] * c2;
+          scfQ[3] = _vec[3] * c2;
+          scfQ[4] = _vec[4] * c2;
+          scfQ[5] = _vec[5] * c2;
+          scfQ[6] = _vec[6] * c2;
+          scfQ[7] = _vec[7] * c2;
+          scfQ[8] = _vec[8] * c2;
+          scfQ[9] = _vec[9] * c2;
+          scfQ[10] = _vec[10] * c2;
+          scfQ[11] = _vec[11] * c2;
+          scfQ[12] = _vec[12] * c2;
+          scfQ[13] = _vec[13] * c2;
+          scfQ[14] = _vec[14] * c2;
+          scfQ[15] = _vec[15] * c2;
+          DCTIIInverse_16(scfQ, scfQ);
+          scfQ[0] += st1[0];
+          scfQ[1] += st1[1];
+          scfQ[2] += st1[2];
+          scfQ[3] += st1[3];
+          scfQ[4] += st1[4];
+          scfQ[5] += st1[5];
+          scfQ[6] += st1[6];
+          scfQ[7] += st1[7];
+          scfQ[8] += st1[8];
+          scfQ[9] += st1[9];
+          scfQ[10] += st1[10];
+          scfQ[11] += st1[11];
+          scfQ[12] += st1[12];
+          scfQ[13] += st1[13];
+          scfQ[14] += st1[14];
+          scfQ[15] += st1[15];
         }
         {
           var t1, t2;
@@ -4436,22 +4499,22 @@
             gg = Math.pow(10, (gg_ind + gg_off) / 28);
           }
           {
-            for (var _n26 = 0; _n26 < NE; ++_n26) {
-              var _tmp14 = Xf[_n26];
+            for (var _n24 = 0; _n24 < NE; ++_n24) {
+              var _tmp13 = Xf[_n24];
 
-              if (_tmp14 >= 0) {
-                _tmp14 = Math.trunc(_tmp14 / gg + 0.375);
+              if (_tmp13 >= 0) {
+                _tmp13 = Math.trunc(_tmp13 / gg + 0.375);
               } else {
-                _tmp14 = Math.ceil(_tmp14 / gg - 0.375);
+                _tmp13 = Math.ceil(_tmp13 / gg - 0.375);
               }
 
-              if (_tmp14 > 32767) {
-                _tmp14 = 32767;
-              } else if (_tmp14 < -32768) {
-                _tmp14 = -32768;
+              if (_tmp13 > 32767) {
+                _tmp13 = 32767;
+              } else if (_tmp13 < -32768) {
+                _tmp13 = -32768;
               } else {}
 
-              Xq[_n26] = _tmp14;
+              Xq[_n24] = _tmp13;
             }
           }
           {
@@ -4481,12 +4544,12 @@
             lastnz_trunc = 2;
             var c = 0;
 
-            for (var _n27 = 0; _n27 < lastnz; _n27 += 2) {
-              var Xq_n0 = Xq[_n27];
-              var Xq_n1 = Xq[_n27 + 1];
+            for (var _n25 = 0; _n25 < lastnz; _n25 += 2) {
+              var Xq_n0 = Xq[_n25];
+              var Xq_n1 = Xq[_n25 + 1];
               var t = c + rateFlag;
 
-              if (_n27 > NE_div_2) {
+              if (_n25 > NE_div_2) {
                 t += 256;
               }
 
@@ -4540,7 +4603,7 @@
               }
 
               if ((Xq_n0 != 0 || Xq_n1 != 0) && nbits_est <= nbits_spec << 11 >>> 0) {
-                lastnz_trunc = _n27 + 2;
+                lastnz_trunc = _n25 + 2;
                 nbits_trunc = nbits_est;
               }
 
@@ -4762,16 +4825,16 @@
                 var _sum = 0;
 
                 for (var _s = 0; _s < 3; ++_s) {
-                  var _tmp15 = 0;
+                  var _tmp14 = 0;
 
-                  var _n28 = sub_start[_s],
-                      _n29 = sub_stop[_s] - _k52;
+                  var _n26 = sub_start[_s],
+                      _n27 = sub_stop[_s] - _k52;
 
-                  for (var _n30 = _n28; _n30 < _n29; ++_n30) {
-                    _tmp15 += Xs[_n30] * Xs[_n30 + _k52];
+                  for (var _n28 = _n26; _n28 < _n27; ++_n28) {
+                    _tmp14 += Xs[_n28] * Xs[_n28 + _k52];
                   }
 
-                  _sum += _tmp15 / Es[_s];
+                  _sum += _tmp14 / Es[_s];
                 }
 
                 R[_k52] = _sum;
@@ -4797,8 +4860,8 @@
             for (var _k53 = 1; _k53 < 9; ++_k53) {
               var rc = 0;
 
-              for (var _n31 = 0; _n31 < _k53; ++_n31) {
-                rc += LPCs[_n31] * R[_k53 - _n31];
+              for (var _n29 = 0; _n29 < _k53; ++_n29) {
+                rc += LPCs[_n29] * R[_k53 - _n29];
               }
 
               if (LPC_err < 1e-31) {
@@ -4809,14 +4872,14 @@
               rc = -rc / LPC_err;
               LPCs_tmp1[0] = 1;
 
-              for (var _n32 = 1; _n32 < _k53; ++_n32) {
-                LPCs_tmp1[_n32] = LPCs[_n32] + rc * LPCs[_k53 - _n32];
+              for (var _n30 = 1; _n30 < _k53; ++_n30) {
+                LPCs_tmp1[_n30] = LPCs[_n30] + rc * LPCs[_k53 - _n30];
               }
 
               LPCs_tmp1[_k53] = rc;
 
-              for (var _n33 = 0; _n33 <= _k53; ++_n33) {
-                LPCs[_n33] = LPCs_tmp1[_n33];
+              for (var _n31 = 0; _n31 <= _k53; ++_n31) {
+                LPCs[_n31] = LPCs_tmp1[_n31];
               }
 
               LPC_err *= 1 - rc * rc;
@@ -4875,12 +4938,12 @@
                 RC_f[_k54 - 1] = LPCs_tmp1_k;
                 var e = 1 - LPCs_tmp1_k * LPCs_tmp1_k;
 
-                for (var _n34 = 1; _n34 < _k54; ++_n34) {
-                  LPCs_tmp2[_n34] = (LPCs_tmp1[_n34] - LPCs_tmp1_k * LPCs_tmp1[_k54 - _n34]) / e;
+                for (var _n32 = 1; _n32 < _k54; ++_n32) {
+                  LPCs_tmp2[_n32] = (LPCs_tmp1[_n32] - LPCs_tmp1_k * LPCs_tmp1[_k54 - _n32]) / e;
                 }
 
-                for (var _n35 = 1; _n35 < _k54; ++_n35) {
-                  LPCs_tmp1[_n35] = LPCs_tmp2[_n35];
+                for (var _n33 = 1; _n33 < _k54; ++_n33) {
+                  LPCs_tmp1[_n33] = LPCs_tmp2[_n33];
                 }
               }
             } else {
@@ -4915,32 +4978,32 @@
           var RCint_f = RCint[_f8];
           var RCq_f = RCq[_f8];
           {
-            var _tmp16 = void 0;
+            var _tmp15 = void 0;
 
-            _tmp16 = Math.round(Math.asin(_RC_f2[0]) * RCQ_C1);
-            RCint_f[0] = _tmp16 + 8;
-            RCq_f[0] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[1]) * RCQ_C1);
-            RCint_f[1] = _tmp16 + 8;
-            RCq_f[1] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[2]) * RCQ_C1);
-            RCint_f[2] = _tmp16 + 8;
-            RCq_f[2] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[3]) * RCQ_C1);
-            RCint_f[3] = _tmp16 + 8;
-            RCq_f[3] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[4]) * RCQ_C1);
-            RCint_f[4] = _tmp16 + 8;
-            RCq_f[4] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[5]) * RCQ_C1);
-            RCint_f[5] = _tmp16 + 8;
-            RCq_f[5] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[6]) * RCQ_C1);
-            RCint_f[6] = _tmp16 + 8;
-            RCq_f[6] = Math.sin(_tmp16 * RCQ_C2);
-            _tmp16 = Math.round(Math.asin(_RC_f2[7]) * RCQ_C1);
-            RCint_f[7] = _tmp16 + 8;
-            RCq_f[7] = Math.sin(_tmp16 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[0]) * RCQ_C1);
+            RCint_f[0] = _tmp15 + 8;
+            RCq_f[0] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[1]) * RCQ_C1);
+            RCint_f[1] = _tmp15 + 8;
+            RCq_f[1] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[2]) * RCQ_C1);
+            RCint_f[2] = _tmp15 + 8;
+            RCq_f[2] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[3]) * RCQ_C1);
+            RCint_f[3] = _tmp15 + 8;
+            RCq_f[3] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[4]) * RCQ_C1);
+            RCint_f[4] = _tmp15 + 8;
+            RCq_f[4] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[5]) * RCQ_C1);
+            RCint_f[5] = _tmp15 + 8;
+            RCq_f[5] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[6]) * RCQ_C1);
+            RCint_f[6] = _tmp15 + 8;
+            RCq_f[6] = Math.sin(_tmp15 * RCQ_C2);
+            _tmp15 = Math.round(Math.asin(_RC_f2[7]) * RCQ_C1);
+            RCint_f[7] = _tmp15 + 8;
+            RCq_f[7] = Math.sin(_tmp15 * RCQ_C2);
           }
           {
             var _k55 = 7;
@@ -4972,24 +5035,24 @@
               nbitsTNScoef += AC_TNS_COEF_BITS[v][_RCint_f[v]];
             }
 
-            var _tmp17 = 2048 + nbitsTNSorder + nbitsTNScoef;
+            var _tmp16 = 2048 + nbitsTNSorder + nbitsTNScoef;
 
-            if ((_tmp17 & 2047) != 0) {
-              _tmp17 >>>= 11;
-              ++_tmp17;
+            if ((_tmp16 & 2047) != 0) {
+              _tmp16 >>>= 11;
+              ++_tmp16;
             } else {
-              _tmp17 >>>= 11;
+              _tmp16 >>>= 11;
             }
 
-            nbitsTNS += _tmp17;
+            nbitsTNS += _tmp16;
           }
           {
             if (RCorderS1 >= 0) {
               var start_freq = start_freqs[_f9],
                   stop_freq = stop_freqs[_f9];
 
-              for (var _n36 = start_freq; _n36 < stop_freq; ++_n36) {
-                var t = Xs[_n36];
+              for (var _n34 = start_freq; _n34 < stop_freq; ++_n34) {
+                var t = Xs[_n34];
                 var st_save = t;
 
                 for (var _k56 = 0; _k56 < RCorderS1; ++_k56) {
@@ -5003,7 +5066,7 @@
 
                 t += _RCq_f2[RCorderS1] * st[RCorderS1];
                 st[RCorderS1] = st_save;
-                Xf[_n36] = t;
+                Xf[_n34] = t;
               }
             }
           }
@@ -5085,6 +5148,401 @@
 
     module.exports = {
       "NewBitReversalPermutate": NewBitReversalPermutate
+    };
+  },
+  "lc3/math/dct2-16": function lc3MathDct216(module, require) {
+    function DCTIIForward_16(dct_in) {
+      var dct_out = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Array(16);
+      var t0, t1, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t2, t20, t21, t22, t23, t24, t3, t4, t5, t6, t7, t8, t9;
+      t0 = dct_in[0];
+      t1 = dct_in[2];
+      t2 = dct_in[4];
+      t3 = dct_in[6];
+      t4 = dct_in[8];
+      t5 = dct_in[10];
+      t6 = dct_in[12];
+      t7 = dct_in[14];
+      t8 = dct_in[15];
+      t9 = dct_in[13];
+      t10 = dct_in[11];
+      t11 = dct_in[9];
+      t12 = dct_in[7];
+      t13 = dct_in[5];
+      t14 = dct_in[3];
+      t15 = dct_in[1];
+      t16 = t0 + t8;
+      t17 = t1 + t9;
+      t18 = t4 + t12;
+      t19 = t5 + t13;
+      t20 = t0 - t8;
+      t21 = t1 - t9;
+      t22 = t4 - t12;
+      t23 = t5 - t13;
+      t0 = t16 + t18;
+      t1 = t17 + t19;
+      t4 = t20 + t23;
+      t5 = t21 - t22;
+      t8 = t16 - t18;
+      t9 = t17 - t19;
+      t12 = t20 - t23;
+      t13 = t21 + t22;
+      t17 = t2 + t10;
+      t20 = t3 + t11;
+      t18 = t6 + t14;
+      t21 = t7 + t15;
+      t22 = t2 - t10;
+      t23 = t3 - t11;
+      t16 = t6 - t14;
+      t19 = t7 - t15;
+      t2 = t17 + t18;
+      t3 = t20 + t21;
+      t6 = t22 + t19;
+      t7 = t23 - t16;
+      t10 = t17 - t18;
+      t11 = t20 - t21;
+      t14 = t22 - t19;
+      t15 = t23 + t16;
+      t17 = t6 + t7;
+      t20 = t7 - t6;
+      t6 = t17 * 0.7071067811865476;
+      t7 = t20 * 0.7071067811865476;
+      t18 = t10;
+      t10 = t11;
+      t11 = -t18;
+      t21 = t15 - t14;
+      t22 = -t14 - t15;
+      t14 = t21 * 0.7071067811865476;
+      t15 = t22 * 0.7071067811865476;
+      t19 = t0;
+      t16 = t1;
+      t23 = t2;
+      t17 = t3;
+      t0 = t19 + t23;
+      t1 = t16 + t17;
+      t2 = t19 - t23;
+      t3 = t16 - t17;
+      t20 = t4;
+      t18 = t5;
+      t21 = t6;
+      t22 = t7;
+      t4 = t20 + t21;
+      t5 = t18 + t22;
+      t6 = t20 - t21;
+      t7 = t18 - t22;
+      t23 = t8;
+      t16 = t9;
+      t19 = t10;
+      t17 = t11;
+      t8 = t23 + t19;
+      t9 = t16 + t17;
+      t10 = t23 - t19;
+      t11 = t16 - t17;
+      t20 = t12;
+      t18 = t13;
+      t21 = t14;
+      t22 = t15;
+      t12 = t20 + t21;
+      t13 = t18 + t22;
+      t14 = t20 - t21;
+      t15 = t18 - t22;
+      t23 = t0 + t1;
+      t17 = t0 - t1;
+      t0 = t23;
+      t19 = t17;
+      t16 = 0;
+      t20 = t4 + t14;
+      t18 = t5 - t15;
+      t21 = t5 + t15;
+      t22 = t14 - t4;
+      t23 = 0.9238795325112865 * (t21 + t22);
+      t17 = t21 * -1.306562964876377;
+      t24 = t22 * 0.5411961001461961;
+      t21 = t23 - t24;
+      t22 = t23 + t17;
+      t4 = t20 + t21;
+      t5 = t18 + t22;
+      t14 = t20 - t21;
+      t15 = t22 - t18;
+      t20 = t8 + t10;
+      t18 = t9 - t11;
+      t21 = t9 + t11;
+      t22 = t10 - t8;
+      t24 = t21 + t22;
+      t23 = t22 - t21;
+      t21 = t24 * 0.7071067811865476;
+      t22 = t23 * 0.7071067811865476;
+      t8 = t20 + t21;
+      t9 = t18 + t22;
+      t10 = t20 - t21;
+      t11 = t22 - t18;
+      t17 = t12 + t6;
+      t20 = t13 - t7;
+      t18 = t13 + t7;
+      t21 = t6 - t12;
+      t22 = 0.38268343236509 * (t18 + t21);
+      t24 = t18 * -1.3065629648763766;
+      t23 = t21 * -0.5411961001461967;
+      t18 = t22 - t23;
+      t21 = t22 + t24;
+      t12 = t17 + t18;
+      t13 = t20 + t21;
+      t6 = t17 - t18;
+      t7 = t21 - t20;
+      t17 = t2 + t2;
+      t20 = t3 + t3;
+      t22 = t2 - t2;
+      t18 = t20;
+      t20 = t22;
+      t22 = -t18;
+      t2 = t17 + t20;
+      t3 = t22;
+      t21 = 0.49759236333609846 * (t4 + t5);
+      t24 = t4 * -0.5466009335008787;
+      t23 = t5 * 0.4485837931713182;
+      t4 = t21 - t23;
+      t5 = t21 + t24;
+      t17 = 0.49039264020161516 * (t8 + t9);
+      t20 = t8 * -0.5879378012096795;
+      t18 = t9 * 0.3928474791935508;
+      t8 = t17 - t18;
+      t9 = t17 + t20;
+      t22 = 0.4784701678661044 * (t12 + t13);
+      t21 = t12 * -0.6236125064933357;
+      t24 = t13 * 0.33332782923887316;
+      t12 = t22 - t24;
+      t13 = t22 + t21;
+      t23 = 0.46193976625564326 * (t2 + t3);
+      t17 = t2 * -0.6532814824381885;
+      t20 = t3 * 0.27059805007309806;
+      t2 = t23 - t20;
+      t3 = t23 + t17;
+      t18 = 0.4409606321741774 * (t6 + t7);
+      t22 = t6 * -0.6766590005871764;
+      t21 = t7 * 0.20526226376117845;
+      t6 = t18 - t21;
+      t7 = t18 + t22;
+      t24 = 0.4157348061512726 * (t10 + t11);
+      t23 = t10 * -0.6935199226610738;
+      t17 = t11 * 0.13794968964147153;
+      t10 = t24 - t17;
+      t11 = t24 + t23;
+      t20 = 0.38650522668136833 * (t14 + t15);
+      t18 = t14 * -0.7037018687631913;
+      t22 = t15 * 0.06930858459954536;
+      t14 = t20 - t22;
+      t15 = t20 + t18;
+      t21 = t19 + t16;
+      t19 = t21 * 0.7071067811865476;
+      dct_out[0] = t0;
+      dct_out[1] = t4;
+      dct_out[2] = t8;
+      dct_out[3] = t12;
+      dct_out[4] = t2;
+      dct_out[5] = t6;
+      dct_out[6] = t10;
+      dct_out[7] = t14;
+      dct_out[8] = t19;
+      dct_out[9] = -t15;
+      dct_out[10] = -t11;
+      dct_out[11] = -t7;
+      dct_out[12] = -t3;
+      dct_out[13] = -t13;
+      dct_out[14] = -t9;
+      dct_out[15] = -t5;
+      return dct_out;
+    }
+
+    function DCTIIInverse_16(idct_in) {
+      var idct_out = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : new Array(16);
+      var t0, t1, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t2, t20, t21, t22, t23, t3, t4, t5, t6, t7, t8, t9;
+      t16 = idct_in[0];
+      t17 = 0.7071067811865476 * idct_in[8];
+      t0 = t16 + t17;
+      t1 = t16 - t17;
+      t16 = idct_in[1];
+      t17 = idct_in[15];
+      t20 = 0.49759236333609846 * (t16 + t17);
+      t21 = t16 * -0.5466009335008787;
+      t22 = t17 * 0.4485837931713182;
+      t16 = t20 - t22;
+      t17 = t20 + t21;
+      t18 = idct_in[7];
+      t19 = idct_in[9];
+      t22 = 0.38650522668136833 * (t18 + t19);
+      t21 = t18 * -0.7037018687631913;
+      t20 = t19 * 0.06930858459954536;
+      t18 = t22 - t20;
+      t19 = t22 + t21;
+      t22 = t16 + t18;
+      t21 = t17 - t19;
+      t20 = -(t17 + t19);
+      t23 = t16 - t18;
+      t19 = 0.9238795325112865 * (t20 + t23);
+      t18 = t20 * -1.306562964876377;
+      t16 = t23 * 0.5411961001461961;
+      t20 = t19 - t16;
+      t23 = t19 + t18;
+      t2 = t22 + t20;
+      t3 = t21 + t23;
+      t14 = t22 - t20;
+      t15 = t23 - t21;
+      t17 = idct_in[2];
+      t23 = idct_in[14];
+      t21 = 0.49039264020161516 * (t17 + t23);
+      t20 = t17 * -0.5879378012096795;
+      t18 = t23 * 0.3928474791935508;
+      t17 = t21 - t18;
+      t23 = t21 + t20;
+      t19 = idct_in[6];
+      t22 = idct_in[10];
+      t16 = 0.4157348061512726 * (t19 + t22);
+      t21 = t19 * -0.6935199226610738;
+      t20 = t22 * 0.13794968964147153;
+      t19 = t16 - t20;
+      t22 = t16 + t21;
+      t18 = t17 + t19;
+      t16 = t23 - t22;
+      t21 = -(t23 + t22);
+      t20 = t17 - t19;
+      t17 = t21 + t20;
+      t23 = t20 - t21;
+      t21 = t17 * 0.7071067811865476;
+      t20 = t23 * 0.7071067811865476;
+      t4 = t18 + t21;
+      t5 = t16 + t20;
+      t12 = t18 - t21;
+      t13 = t20 - t16;
+      t19 = idct_in[3];
+      t22 = idct_in[13];
+      t18 = 0.4784701678661044 * (t19 + t22);
+      t17 = t19 * -0.6236125064933357;
+      t16 = t22 * 0.33332782923887316;
+      t19 = t18 - t16;
+      t22 = t18 + t17;
+      t21 = idct_in[5];
+      t20 = idct_in[11];
+      t23 = 0.4409606321741774 * (t21 + t20);
+      t18 = t21 * -0.6766590005871764;
+      t17 = t20 * 0.20526226376117845;
+      t21 = t23 - t17;
+      t20 = t23 + t18;
+      t16 = t19 + t21;
+      t23 = t22 - t20;
+      t18 = -(t22 + t20);
+      t17 = t19 - t21;
+      t19 = 0.38268343236509 * (t18 + t17);
+      t22 = t18 * -1.3065629648763766;
+      t21 = t17 * -0.5411961001461967;
+      t18 = t19 - t21;
+      t17 = t19 + t22;
+      t6 = t16 + t18;
+      t7 = t23 + t17;
+      t10 = t16 - t18;
+      t11 = t17 - t23;
+      t8 = idct_in[4];
+      t9 = idct_in[12];
+      t18 = 0.9238795325112865 * (t8 + t9);
+      t20 = t8 * -1.306562964876377;
+      t16 = t9 * 0.5411961001461961;
+      t8 = t18 - t16;
+      t9 = t18 + t20;
+      t23 = t0 + t8;
+      t19 = t1 + t9;
+      t22 = t4 + t12;
+      t17 = t5 + t13;
+      t21 = t0 - t8;
+      t18 = t1 - t9;
+      t20 = t4 - t12;
+      t16 = t5 - t13;
+      t0 = t23 + t22;
+      t1 = t19 + t17;
+      t4 = t21 + t16;
+      t5 = t18 - t20;
+      t8 = t23 - t22;
+      t9 = t19 - t17;
+      t12 = t21 - t16;
+      t13 = t18 + t20;
+      t23 = t2 + t10;
+      t19 = t3 + t11;
+      t22 = t6 + t14;
+      t21 = t7 + t15;
+      t20 = t2 - t10;
+      t18 = t3 - t11;
+      t17 = t6 - t14;
+      t16 = t7 - t15;
+      t2 = t23 + t22;
+      t3 = t19 + t21;
+      t6 = t20 + t16;
+      t7 = t18 - t17;
+      t10 = t23 - t22;
+      t11 = t19 - t21;
+      t14 = t20 - t16;
+      t15 = t18 + t17;
+      t20 = t6 + t7;
+      t23 = t7 - t6;
+      t6 = t20 * 0.7071067811865476;
+      t7 = t23 * 0.7071067811865476;
+      t17 = t10;
+      t10 = t11;
+      t11 = -t17;
+      t22 = t15 - t14;
+      t21 = -t14 - t15;
+      t14 = t22 * 0.7071067811865476;
+      t15 = t21 * 0.7071067811865476;
+      t18 = t0;
+      t16 = t1;
+      t19 = t2;
+      t20 = t3;
+      t0 = t18 + t19;
+      t1 = t16 + t20;
+      t2 = t18 - t19;
+      t3 = t16 - t20;
+      t23 = t4;
+      t17 = t5;
+      t22 = t6;
+      t21 = t7;
+      t4 = t23 + t22;
+      t5 = t17 + t21;
+      t6 = t23 - t22;
+      t7 = t17 - t21;
+      t18 = t8;
+      t16 = t9;
+      t19 = t10;
+      t20 = t11;
+      t8 = t18 + t19;
+      t9 = t16 + t20;
+      t10 = t18 - t19;
+      t11 = t16 - t20;
+      t23 = t12;
+      t17 = t13;
+      t22 = t14;
+      t21 = t15;
+      t12 = t23 + t22;
+      t13 = t17 + t21;
+      t14 = t23 - t22;
+      t15 = t17 - t21;
+      idct_out[0] = t0;
+      idct_out[1] = t15;
+      idct_out[2] = t1;
+      idct_out[3] = t14;
+      idct_out[4] = t4;
+      idct_out[5] = t11;
+      idct_out[6] = t5;
+      idct_out[7] = t10;
+      idct_out[8] = t8;
+      idct_out[9] = t7;
+      idct_out[10] = t9;
+      idct_out[11] = t6;
+      idct_out[12] = t12;
+      idct_out[13] = t3;
+      idct_out[14] = t13;
+      idct_out[15] = t2;
+      return idct_out;
+    }
+
+    module.exports = {
+      "DCTIIForward_16": DCTIIForward_16,
+      "DCTIIInverse_16": DCTIIInverse_16
     };
   },
   "lc3/math/fft-mx-60": function lc3MathFftMx60(module, require) {
@@ -12309,9 +12767,9 @@
         }
       }
 
-      for (var _n37 = N; _n37 <= MsN; ++_n37) {
-        B_RE[_n37] = 0;
-        B_IM[_n37] = 0;
+      for (var _n35 = N; _n35 <= MsN; ++_n35) {
+        B_RE[_n35] = 0;
+        B_IM[_n35] = 0;
       }
 
       fft.transform(B_RE, B_IM);
@@ -12323,43 +12781,43 @@
           throw new LC3IllegalParameterError("Incorrect block size.");
         }
 
-        for (var _n38 = 0; _n38 < N; ++_n38) {
-          var xn_re = x_re[_n38],
-              xn_im = x_im[_n38];
-          var twn_re = TW_RE[_n38];
-          var twn_im = -TW_IM[_n38];
-          A_RE[_n38] = xn_re * twn_re - xn_im * twn_im;
-          A_IM[_n38] = xn_im * twn_re + xn_re * twn_im;
+        for (var _n36 = 0; _n36 < N; ++_n36) {
+          var xn_re = x_re[_n36],
+              xn_im = x_im[_n36];
+          var twn_re = TW_RE[_n36];
+          var twn_im = -TW_IM[_n36];
+          A_RE[_n36] = xn_re * twn_re - xn_im * twn_im;
+          A_IM[_n36] = xn_im * twn_re + xn_re * twn_im;
         }
 
-        for (var _n39 = N; _n39 < M; ++_n39) {
-          A_RE[_n39] = 0;
-          A_IM[_n39] = 0;
-        }
-
-        fft.transform(A_RE, A_IM);
-
-        for (var _n40 = 0; _n40 < M; ++_n40) {
-          var a_re = A_RE[_n40],
-              a_im = A_IM[_n40];
-          var b_re = B_RE[_n40],
-              b_im = B_IM[_n40];
-          A_RE[_n40] = (a_re * b_re - a_im * b_im) / M;
-          A_IM[_n40] = -(a_im * b_re + a_re * b_im) / M;
+        for (var _n37 = N; _n37 < M; ++_n37) {
+          A_RE[_n37] = 0;
+          A_IM[_n37] = 0;
         }
 
         fft.transform(A_RE, A_IM);
 
-        for (var _n41 = 0; _n41 < N; ++_n41) {
-          var _a_re = A_RE[_n41],
-              _a_im = -A_IM[_n41];
+        for (var _n38 = 0; _n38 < M; ++_n38) {
+          var a_re = A_RE[_n38],
+              a_im = A_IM[_n38];
+          var b_re = B_RE[_n38],
+              b_im = B_IM[_n38];
+          A_RE[_n38] = (a_re * b_re - a_im * b_im) / M;
+          A_IM[_n38] = -(a_im * b_re + a_re * b_im) / M;
+        }
 
-          var _twn_re = TW_RE[_n41];
+        fft.transform(A_RE, A_IM);
 
-          var _twn_im = -TW_IM[_n41];
+        for (var _n39 = 0; _n39 < N; ++_n39) {
+          var _a_re = A_RE[_n39],
+              _a_im = -A_IM[_n39];
 
-          x_re[_n41] = _a_re * _twn_re - _a_im * _twn_im;
-          x_im[_n41] = _a_im * _twn_re + _a_re * _twn_im;
+          var _twn_re = TW_RE[_n39];
+
+          var _twn_im = -TW_IM[_n39];
+
+          x_re[_n39] = _a_re * _twn_re - _a_im * _twn_im;
+          x_im[_n39] = _a_im * _twn_re + _a_re * _twn_im;
         }
       };
     }
@@ -12752,11 +13210,11 @@
           throw new LC3IllegalParameterError("Output block size is not the unit size.");
         }
 
-        for (var _n42 = 0, u = 0; _n42 < M; ++_n42, u += 2) {
+        for (var _n40 = 0, u = 0; _n40 < M; ++_n40, u += 2) {
           var x1 = x[u],
               x2 = x[u + 1];
-          Z_re[_n42] = x1 * rho_even_re[_n42] + x2 * rho_odd_re[_n42];
-          Z_im[_n42] = x1 * rho_even_im[_n42] + x2 * rho_odd_im[_n42];
+          Z_re[_n40] = x1 * rho_even_re[_n40] + x2 * rho_odd_re[_n40];
+          Z_im[_n40] = x1 * rho_even_im[_n40] + x2 * rho_odd_im[_n40];
         }
 
         fft.transform(Z_re, Z_im);
@@ -12784,20 +13242,20 @@
         }
       };
 
-      for (var _n43 = 0, u = 0, phi1 = 0, phi3 = -(0.5 + 0.5 * M) * PI_div_M, phi4 = -0.5 * PI_div_2M, phi5 = PI_div_4; _n43 < M; ++_n43, u += 2, phi1 -= PI_div_M, phi3 -= PI_div_M, phi4 -= PI_div_2M, phi5 += PI_div_2) {
+      for (var _n41 = 0, u = 0, phi1 = 0, phi3 = -(0.5 + 0.5 * M) * PI_div_M, phi4 = -0.5 * PI_div_2M, phi5 = PI_div_4; _n41 < M; ++_n41, u += 2, phi1 -= PI_div_M, phi3 -= PI_div_M, phi4 -= PI_div_2M, phi5 += PI_div_2) {
         var tmp = C_div_2 * W[u];
-        rho_even_re[_n43] = tmp * Math.cos(phi1);
-        rho_even_im[_n43] = tmp * Math.sin(phi1);
+        rho_even_re[_n41] = tmp * Math.cos(phi1);
+        rho_even_im[_n41] = tmp * Math.sin(phi1);
         var phi2 = phi1 + PI_div_2;
         tmp = C_div_2 * W[u + 1];
-        rho_odd_re[_n43] = tmp * Math.cos(phi2);
-        rho_odd_im[_n43] = tmp * Math.sin(phi2);
-        TW1_re[_n43] = Math.cos(phi3);
-        TW1_im[_n43] = Math.sin(phi3);
-        TW2_re[_n43] = Math.cos(phi4);
-        TW2_im[_n43] = Math.sin(phi4);
-        TW3_re[_n43] = Math.cos(phi5);
-        TW3_im[_n43] = Math.sin(phi5);
+        rho_odd_re[_n41] = tmp * Math.cos(phi2);
+        rho_odd_im[_n41] = tmp * Math.sin(phi2);
+        TW1_re[_n41] = Math.cos(phi3);
+        TW1_im[_n41] = Math.sin(phi3);
+        TW2_re[_n41] = Math.cos(phi4);
+        TW2_im[_n41] = Math.sin(phi4);
+        TW3_re[_n41] = Math.cos(phi5);
+        TW3_im[_n41] = Math.sin(phi5);
       }
     }
 
@@ -12857,9 +13315,9 @@
       var TW3_re = new Array(N);
       var TW3_im = new Array(N);
 
-      for (var _n44 = 0, c = Math.PI / N, _phi2 = 0.5 * (M + 1) * c; _n44 < N; ++_n44, _phi2 += c) {
-        TW3_re[_n44] = Math.cos(_phi2);
-        TW3_im[_n44] = Math.sin(_phi2);
+      for (var _n42 = 0, c = Math.PI / N, _phi2 = 0.5 * (M + 1) * c; _n42 < N; ++_n42, _phi2 += c) {
+        TW3_re[_n42] = Math.cos(_phi2);
+        TW3_im[_n42] = Math.sin(_phi2);
       }
 
       this.transform = function (X, Y) {
@@ -12974,7 +13432,7 @@
         var next_sign_ind = 0;
         var got_sign_flag = false;
 
-        for (var pos = N - 1, _n45 = 0; pos >= 0; --pos, ++_n45) {
+        for (var pos = N - 1, _n43 = 0; pos >= 0; --pos, ++_n43) {
           var val = X[pos];
 
           if (val != 0 && got_sign_flag) {
@@ -12989,7 +13447,7 @@
             next_sign_ind = 1;
           }
 
-          index += MPVQ_offsets[_n45][k_acc];
+          index += MPVQ_offsets[_n43][k_acc];
           k_acc += Math.abs(val);
 
           if (k_acc > Kmax) {
@@ -13033,13 +13491,13 @@
           LS_ind = -1;
         }
 
-        for (var _n46 = 0; _n46 < N; ++_n46) {
-          vec[_n46] = 0;
+        for (var _n44 = 0; _n44 < N; ++_n44) {
+          vec[_n44] = 0;
         }
 
         var k_max_local = K;
 
-        for (var pos = 0, _n47 = N - 1; pos < N; ++pos, --_n47) {
+        for (var pos = 0, _n45 = N - 1; pos < N; ++pos, --_n45) {
           if (index == 0) {
             if (LS_ind < 0) {
               vec[pos] = -k_max_local;
@@ -13061,7 +13519,7 @@
             }
 
             mid >>>= 1;
-            var amp_offset = MPVQ_offsets[_n47][mid];
+            var amp_offset = MPVQ_offsets[_n45][mid];
 
             if (amp_offset > index) {
               high = mid - 1;
@@ -13071,7 +13529,7 @@
           }
 
           var k_delta = k_max_local - low;
-          index -= MPVQ_offsets[_n47][low];
+          index -= MPVQ_offsets[_n45][low];
 
           if (k_delta != 0) {
               if (LS_ind < 0) {
@@ -13388,7 +13846,6 @@
     var SNS_GAINMSBBITS = [1, 1, 2, 2];
     var SNS_GAINLSBBITS = [0, 1, 0, 1];
     var GIJ = [SNS_VQ_REG_ADJ_GAINS, SNS_VQ_REG_LF_ADJ_GAINS, SNS_VQ_NEAR_ADJ_GAINS, SNS_VQ_FAR_ADJ_GAINS];
-    var DCTII_16x16 = [[0.25, 0.35185093438159565, 0.3467599613305369, 0.33832950029358816, 0.32664074121909414, 0.31180625324666783, 0.2939689006048397, 0.2733004667504394, 0.25000000000000006, 0.2242918965856591, 0.1964237395967756, 0.1666639146194367, 0.13529902503654928, 0.10263113188058934, 0.06897484482073578, 0.034654292299772925], [0.25, 0.33832950029358816, 0.2939689006048397, 0.2242918965856591, 0.13529902503654928, 0.034654292299772925, -0.06897484482073574, -0.16666391461943666, -0.25, -0.3118062532466678, -0.3467599613305369, -0.35185093438159565, -0.3266407412190942, -0.27330046675043945, -0.19642373959677553, -0.10263113188058938], [0.25, 0.31180625324666783, 0.1964237395967756, 0.034654292299772925, -0.13529902503654925, -0.2733004667504394, -0.3467599613305369, -0.3383295002935882, -0.25000000000000006, -0.10263113188058938, 0.06897484482073576, 0.22429189658565912, 0.3266407412190941, 0.35185093438159565, 0.29396890060483977, 0.16666391461943675], [0.25, 0.2733004667504394, 0.06897484482073578, -0.16666391461943666, -0.32664074121909414, -0.3383295002935882, -0.19642373959677553, 0.03465429229977269, 0.24999999999999994, 0.35185093438159565, 0.29396890060483977, 0.10263113188058942, -0.1352990250365493, -0.3118062532466678, -0.34675996133053694, -0.22429189658565904], [0.25, 0.2242918965856591, -0.06897484482073574, -0.3118062532466678, -0.3266407412190942, -0.10263113188058938, 0.19642373959677542, 0.35185093438159565, 0.25000000000000006, -0.03465429229977264, -0.29396890060483966, -0.33832950029358816, -0.13529902503654953, 0.16666391461943653, 0.3467599613305369, 0.2733004667504396], [0.25, 0.1666639146194367, -0.19642373959677548, -0.35185093438159565, -0.13529902503654945, 0.22429189658565912, 0.3467599613305369, 0.10263113188058942, -0.24999999999999972, -0.33832950029358816, -0.06897484482073567, 0.2733004667504394, 0.32664074121909414, 0.03465429229977294, -0.2939689006048396, -0.3118062532466682], [0.25, 0.10263113188058934, -0.2939689006048397, -0.27330046675043945, 0.13529902503654934, 0.35185093438159565, 0.06897484482073593, -0.3118062532466678, -0.2499999999999999, 0.16666391461943653, 0.34675996133053694, 0.03465429229977294, -0.32664074121909403, -0.22429189658565912, 0.1964237395967753, 0.3383295002935884], [0.25, 0.034654292299772925, -0.3467599613305369, -0.10263113188058938, 0.3266407412190941, 0.16666391461943675, -0.29396890060483966, -0.22429189658565904, 0.2499999999999997, 0.2733004667504396, -0.1964237395967753, -0.3118062532466682, 0.13529902503654917, 0.3383295002935884, -0.06897484482073586, -0.3518509343815957], [0.25, -0.03465429229977288, -0.3467599613305369, 0.10263113188058924, 0.32664074121909414, -0.16666391461943658, -0.2939689006048398, 0.22429189658565882, 0.24999999999999992, -0.2733004667504394, -0.1964237395967757, 0.311806253246668, 0.13529902503654964, -0.3383295002935882, -0.06897484482073646, 0.3518509343815956], [0.25, -0.10263113188058928, -0.29396890060483977, 0.2733004667504393, 0.1352990250365495, -0.35185093438159565, 0.06897484482073538, 0.31180625324666794, -0.24999999999999964, -0.16666391461943686, 0.3467599613305369, -0.03465429229977309, -0.3266407412190945, 0.22429189658565868, 0.19642373959677578, -0.33832950029358816], [0.25, -0.16666391461943666, -0.19642373959677553, 0.35185093438159565, -0.1352990250365493, -0.22429189658565904, 0.3467599613305369, -0.10263113188058942, -0.24999999999999994, 0.3383295002935882, -0.06897484482073586, -0.27330046675043934, 0.3266407412190942, -0.03465429229977301, -0.2939689006048396, 0.31180625324666794], [0.25, -0.22429189658565904, -0.0689748448207359, 0.31180625324666783, -0.32664074121909403, 0.10263113188058946, 0.19642373959677567, -0.35185093438159565, 0.2499999999999996, 0.034654292299773654, -0.2939689006048396, 0.33832950029358816, -0.13529902503654906, -0.16666391461943703, 0.34675996133053705, -0.2733004667504396], [0.25, -0.2733004667504394, 0.06897484482073576, 0.16666391461943675, -0.32664074121909414, 0.33832950029358805, -0.1964237395967753, -0.03465429229977361, 0.25, -0.3518509343815957, 0.2939689006048392, -0.10263113188058925, -0.13529902503654978, 0.31180625324666833, -0.3467599613305366, 0.22429189658565854], [0.25, -0.3118062532466678, 0.19642373959677542, -0.03465429229977264, -0.13529902503654953, 0.2733004667504396, -0.34675996133053694, 0.3383295002935882, -0.2499999999999996, 0.1026311318805893, 0.0689748448207365, -0.22429189658565923, 0.3266407412190945, -0.3518509343815956, 0.2939689006048398, -0.16666391461943508], [0.25, -0.33832950029358816, 0.2939689006048397, -0.22429189658565885, 0.13529902503654925, -0.03465429229977256, -0.06897484482073638, 0.16666391461943691, -0.25000000000000006, 0.3118062532466683, -0.346759961330537, 0.3518509343815956, -0.3266407412190937, 0.2733004667504388, -0.19642373959677503, 0.10263113188058905], [0.25, -0.3518509343815956, 0.3467599613305368, -0.33832950029358805, 0.32664074121909403, -0.3118062532466677, 0.29396890060483927, -0.27330046675043895, 0.24999999999999956, -0.22429189658565865, 0.19642373959677514, -0.16666391461943517, 0.13529902503654775, -0.10263113188058788, 0.06897484482073434, -0.0346542922997715]];
     module.exports = {
       "LFCB": LFCB,
       "HFCB": HFCB,
@@ -13398,8 +13855,7 @@
       "SNS_VQ_FAR_ADJ_GAINS": SNS_VQ_FAR_ADJ_GAINS,
       "SNS_GAINMSBBITS": SNS_GAINMSBBITS,
       "SNS_GAINLSBBITS": SNS_GAINLSBBITS,
-      "GIJ": GIJ,
-      "DCTII_16x16": DCTII_16x16
+      "GIJ": GIJ
     };
   },
   "lc3/tables/sq": function lc3TablesSq(module, require) {

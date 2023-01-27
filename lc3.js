@@ -1,5 +1,5 @@
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -104,7 +104,7 @@
 })(window, "LC3", {
     "lc3/common/array_util": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -145,7 +145,7 @@ module.exports = {
     },
     "lc3/common/fs": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -229,7 +229,7 @@ module.exports = {
     },
     "lc3/common/int_util": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -260,7 +260,7 @@ module.exports = {
     },
     "lc3/common/ltpf-common": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -366,7 +366,7 @@ module.exports = {
     },
     "lc3/common/nms": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -422,7 +422,7 @@ module.exports = {
     },
     "lc3/common/object_util": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -474,7 +474,7 @@ module.exports = {
     },
     "lc3/common/slide_window": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -762,7 +762,7 @@ module.exports = {
     },
     "lc3/common/uint": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -798,7 +798,7 @@ module.exports = {
     },
     "lc3/decoder/bec": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -858,7 +858,7 @@ module.exports = {
     },
     "lc3/decoder/decoder": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -1923,7 +1923,7 @@ module.exports = {
     },
     "lc3/decoder/ld-mdct": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -2050,7 +2050,7 @@ module.exports = {
     },
     "lc3/decoder/ltpf": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -2151,10 +2151,12 @@ const TAB_LTPF_DEN_TBL = [
 //  History size of x_ltpf_hat[] window.
 const X_LTPF_HAT_WIN_HISTORY_SIZE = [
     [
-        300, 300, 300, 320, 480, 480
+        //  Nms = 10ms.
+        300, 300, 460, 600, 880, 880
     ],
     [
-        300, 300, 360, 480, 720, 720
+        //  Nms = 7.5ms.
+        300, 300, 460, 600, 880, 880
     ]
 ];
 
@@ -2480,7 +2482,7 @@ module.exports = {
     },
     "lc3/decoder/plc": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -2608,7 +2610,7 @@ module.exports = {
     },
     "lc3/decoder/sns": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -2630,6 +2632,8 @@ const Lc3TblNF =
     require("./../tables/nf");
 const Lc3TblSns = 
     require("./../tables/sns");
+const Lc3Dct2_16 = 
+    require("./../math/dct2-16");
 const Lc3Pvq = 
     require("./../math/pvq");
 const Lc3Mpvq = 
@@ -2650,6 +2654,8 @@ const LC3BugError =
 //  Imported functions.
 const PVQNormalize = 
     Lc3Pvq.PVQNormalize;
+const DCTIIInverse_16 = 
+    Lc3Dct2_16.DCTIIInverse_16;
 
 //  Imported constants.
 const NB_TBL = 
@@ -2658,8 +2664,6 @@ const NF_TBL =
     Lc3TblNF.NF_TBL;
 const I_TBL = 
     Lc3TblI.I_TBL;
-const DCTII_16x16 = 
-    Lc3TblSns.DCTII_16x16;
 const HFCB = 
     Lc3TblSns.HFCB;
 const LFCB = 
@@ -2877,13 +2881,40 @@ function LC3SpectralNoiseShapingDecoder(Nms, Fs) {
             //  Finally, the synthesis of the quantized scale factor vector 
             //  scfQ[n] shall be performed in the same way as on the encoder 
             //  side.
-            for (let n = 0; n < 16; ++n) {
-                let tmp = 0;
-                for (let col = 0; col < 16; ++col) {
-                    tmp += xq_shape_j[col] * DCTII_16x16[n][col];
-                }
-                scfQ[n] = st1[n] + G * tmp;
-            }
+            let c1 = 0.25 * G, c2 = 0.3535533905932738 * G;
+            scfQ[ 0] = xq_shape_j[ 0] * c1;
+            scfQ[ 1] = xq_shape_j[ 1] * c2;
+            scfQ[ 2] = xq_shape_j[ 2] * c2;
+            scfQ[ 3] = xq_shape_j[ 3] * c2;
+            scfQ[ 4] = xq_shape_j[ 4] * c2;
+            scfQ[ 5] = xq_shape_j[ 5] * c2;
+            scfQ[ 6] = xq_shape_j[ 6] * c2;
+            scfQ[ 7] = xq_shape_j[ 7] * c2;
+            scfQ[ 8] = xq_shape_j[ 8] * c2;
+            scfQ[ 9] = xq_shape_j[ 9] * c2;
+            scfQ[10] = xq_shape_j[10] * c2;
+            scfQ[11] = xq_shape_j[11] * c2;
+            scfQ[12] = xq_shape_j[12] * c2;
+            scfQ[13] = xq_shape_j[13] * c2;
+            scfQ[14] = xq_shape_j[14] * c2;
+            scfQ[15] = xq_shape_j[15] * c2;
+            DCTIIInverse_16(scfQ, scfQ);
+            scfQ[ 0] += st1[ 0];
+            scfQ[ 1] += st1[ 1];
+            scfQ[ 2] += st1[ 2];
+            scfQ[ 3] += st1[ 3];
+            scfQ[ 4] += st1[ 4];
+            scfQ[ 5] += st1[ 5];
+            scfQ[ 6] += st1[ 6];
+            scfQ[ 7] += st1[ 7];
+            scfQ[ 8] += st1[ 8];
+            scfQ[ 9] += st1[ 9];
+            scfQ[10] += st1[10];
+            scfQ[11] += st1[11];
+            scfQ[12] += st1[12];
+            scfQ[13] += st1[13];
+            scfQ[14] += st1[14];
+            scfQ[15] += st1[15];
         }
         // console.log("scfQ[]=" + scfQ.toString());
 
@@ -3073,7 +3104,7 @@ module.exports = {
     },
     "lc3/encoder/attack-detector": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -3255,7 +3286,7 @@ module.exports = {
     },
     "lc3/encoder/bw-detector": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -3448,7 +3479,7 @@ module.exports = {
     },
     "lc3/encoder/encoder": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -4388,7 +4419,7 @@ module.exports = {
     },
     "lc3/encoder/ld-mdct": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -4595,7 +4626,7 @@ module.exports = {
     },
     "lc3/encoder/ltpf": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -5406,7 +5437,7 @@ module.exports = {
     },
     "lc3/encoder/nle": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -5544,7 +5575,7 @@ module.exports = {
     },
     "lc3/encoder/sns": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -5566,6 +5597,8 @@ const Lc3TblNF =
     require("./../tables/nf");
 const Lc3TblSns = 
     require("./../tables/sns");
+const Lc3Dct2_16 = 
+    require("./../math/dct2-16");
 const Lc3Pvq = 
     require("./../math/pvq");
 const Lc3Mpvq = 
@@ -5590,6 +5623,10 @@ const PVQSearch =
     Lc3Pvq.PVQSearch;
 const PVQNormalize = 
     Lc3Pvq.PVQNormalize;
+const DCTIIForward_16 = 
+    Lc3Dct2_16.DCTIIForward_16;
+const DCTIIInverse_16 = 
+    Lc3Dct2_16.DCTIIInverse_16;
 
 //  Imported constants.
 const I_TBL = 
@@ -5598,8 +5635,6 @@ const NF_TBL =
     Lc3TblNF.NF_TBL;
 const NB_TBL = 
     Lc3TblNB.NB_TBL;
-const DCTII_16x16 = 
-    Lc3TblSns.DCTII_16x16;
 const HFCB = 
     Lc3TblSns.HFCB;
 const LFCB = 
@@ -6432,14 +6467,23 @@ function LC3SpectralNoiseShapingEncoder(Nms, Fs) {
         //  Stage 2 target preparation (3.3.7.3.3.3).
         {
             //  Eq. 43
-            for (let n = 0; n < 16; ++n) {
-                let tmp = 0;
-                for (let row = 0; row < 16; ++row) {
-                    tmp += r1[row] * DCTII_16x16[row][n];
-                }
-                t2rot[n] = tmp;
-            }
-
+            DCTIIForward_16(r1, t2rot);
+            t2rot[ 0] *= 0.25;
+            t2rot[ 1] *= 0.3535533905932738;
+            t2rot[ 2] *= 0.3535533905932738;
+            t2rot[ 3] *= 0.3535533905932738;
+            t2rot[ 4] *= 0.3535533905932738;
+            t2rot[ 5] *= 0.3535533905932738;
+            t2rot[ 6] *= 0.3535533905932738;
+            t2rot[ 7] *= 0.3535533905932738;
+            t2rot[ 8] *= 0.3535533905932738;
+            t2rot[ 9] *= 0.3535533905932738;
+            t2rot[10] *= 0.3535533905932738;
+            t2rot[11] *= 0.3535533905932738;
+            t2rot[12] *= 0.3535533905932738;
+            t2rot[13] *= 0.3535533905932738;
+            t2rot[14] *= 0.3535533905932738;
+            t2rot[15] *= 0.3535533905932738;
             for (let n = 0; n < 10; ++n) {
                 t2rot_setA[n] = t2rot[n];
             }
@@ -6628,13 +6672,40 @@ function LC3SpectralNoiseShapingEncoder(Nms, Fs) {
             //  Eq. 62
             let vec = sns_xq[shape_j];
             let gain = GIJ[shape_j][gain_i];
-            for (let n = 0; n < 16; ++n) {
-                let scfQ_n = st1[n];
-                for (let col = 0; col < 16; ++col) {
-                    scfQ_n += gain * vec[col] * DCTII_16x16[n][col];
-                }
-                scfQ[n] = scfQ_n;
-            }
+            let c1 = 0.25 * gain, c2 = 0.3535533905932738 * gain;
+            scfQ[ 0] = vec[ 0] * c1;
+            scfQ[ 1] = vec[ 1] * c2;
+            scfQ[ 2] = vec[ 2] * c2;
+            scfQ[ 3] = vec[ 3] * c2;
+            scfQ[ 4] = vec[ 4] * c2;
+            scfQ[ 5] = vec[ 5] * c2;
+            scfQ[ 6] = vec[ 6] * c2;
+            scfQ[ 7] = vec[ 7] * c2;
+            scfQ[ 8] = vec[ 8] * c2;
+            scfQ[ 9] = vec[ 9] * c2;
+            scfQ[10] = vec[10] * c2;
+            scfQ[11] = vec[11] * c2;
+            scfQ[12] = vec[12] * c2;
+            scfQ[13] = vec[13] * c2;
+            scfQ[14] = vec[14] * c2;
+            scfQ[15] = vec[15] * c2;
+            DCTIIInverse_16(scfQ, scfQ);
+            scfQ[ 0] += st1[ 0];
+            scfQ[ 1] += st1[ 1];
+            scfQ[ 2] += st1[ 2];
+            scfQ[ 3] += st1[ 3];
+            scfQ[ 4] += st1[ 4];
+            scfQ[ 5] += st1[ 5];
+            scfQ[ 6] += st1[ 6];
+            scfQ[ 7] += st1[ 7];
+            scfQ[ 8] += st1[ 8];
+            scfQ[ 9] += st1[ 9];
+            scfQ[10] += st1[10];
+            scfQ[11] += st1[11];
+            scfQ[12] += st1[12];
+            scfQ[13] += st1[13];
+            scfQ[14] += st1[14];
+            scfQ[15] += st1[15];
         }
         // console.log("scfQ=" + scfQ.toString());
 
@@ -6853,7 +6924,7 @@ module.exports = {
     },
     "lc3/encoder/sq": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -7484,7 +7555,7 @@ module.exports = {
     },
     "lc3/encoder/tns": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -8036,7 +8107,7 @@ module.exports = {
     },
     "lc3/math/brp": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -8104,9 +8175,455 @@ module.exports = {
     "NewBitReversalPermutate": NewBitReversalPermutate
 };
     },
+    "lc3/math/dct2-16": function(module, require) {
+//
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
+//  Use of this source code is governed by a BSD-style license that can be
+//  found in the LICENSE.md file.
+//
+
+//
+//  Public functions.
+//
+
+/**
+ *  Do 16-point Type-II FDCT (not orthogonalized).
+ * 
+ *  Note(s):
+ *    [1] Expected output:
+ *        dct_out[k] = sum(n = 0...N-1, dct_in[n] * cos((2n + 1)kπ / 2N))
+ *        (where 0 <= k < N, N = 16).
+ *    [2] In-place transformation is supported.
+ * 
+ *  @param {Number[]} dct_in
+ *    - The input vector.
+ *  @param {Number[]} [dct_out]
+ *    - The output vector.
+ *  @returns {Number[]}
+ *    - The output vector.
+ */
+function DCTIIForward_16(dct_in, dct_out = new Array(16)) {
+    //
+    //  This function was generated by our proprietary DCT compiler 
+    //  automatically.
+    //  Do NOT modified the code manually.
+    //
+    let t0, t1, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t2, t20, t21, t22, t23, t24, t3, t4, t5, t6, t7, t8, t9;
+    t0 = dct_in[0];
+    t1 = dct_in[2];
+    t2 = dct_in[4];
+    t3 = dct_in[6];
+    t4 = dct_in[8];
+    t5 = dct_in[10];
+    t6 = dct_in[12];
+    t7 = dct_in[14];
+    t8 = dct_in[15];
+    t9 = dct_in[13];
+    t10 = dct_in[11];
+    t11 = dct_in[9];
+    t12 = dct_in[7];
+    t13 = dct_in[5];
+    t14 = dct_in[3];
+    t15 = dct_in[1];
+    t16 = t0 + t8;
+    t17 = t1 + t9;
+    t18 = t4 + t12;
+    t19 = t5 + t13;
+    t20 = t0 - t8;
+    t21 = t1 - t9;
+    t22 = t4 - t12;
+    t23 = t5 - t13;
+    t0 = t16 + t18;
+    t1 = t17 + t19;
+    t4 = t20 + t23;
+    t5 = t21 - t22;
+    t8 = t16 - t18;
+    t9 = t17 - t19;
+    t12 = t20 - t23;
+    t13 = t21 + t22;
+    t17 = t2 + t10;
+    t20 = t3 + t11;
+    t18 = t6 + t14;
+    t21 = t7 + t15;
+    t22 = t2 - t10;
+    t23 = t3 - t11;
+    t16 = t6 - t14;
+    t19 = t7 - t15;
+    t2 = t17 + t18;
+    t3 = t20 + t21;
+    t6 = t22 + t19;
+    t7 = t23 - t16;
+    t10 = t17 - t18;
+    t11 = t20 - t21;
+    t14 = t22 - t19;
+    t15 = t23 + t16;
+    t17 = t6 + t7;
+    t20 = t7 - t6;
+    t6 = t17 * 0.7071067811865476;
+    t7 = t20 * 0.7071067811865476;
+    t18 = t10;
+    t10 = t11;
+    t11 = -t18;
+    t21 = t15 - t14;
+    t22 = -t14 - t15;
+    t14 = t21 * 0.7071067811865476;
+    t15 = t22 * 0.7071067811865476;
+    t19 = t0;
+    t16 = t1;
+    t23 = t2;
+    t17 = t3;
+    t0 = t19 + t23;
+    t1 = t16 + t17;
+    t2 = t19 - t23;
+    t3 = t16 - t17;
+    t20 = t4;
+    t18 = t5;
+    t21 = t6;
+    t22 = t7;
+    t4 = t20 + t21;
+    t5 = t18 + t22;
+    t6 = t20 - t21;
+    t7 = t18 - t22;
+    t23 = t8;
+    t16 = t9;
+    t19 = t10;
+    t17 = t11;
+    t8 = t23 + t19;
+    t9 = t16 + t17;
+    t10 = t23 - t19;
+    t11 = t16 - t17;
+    t20 = t12;
+    t18 = t13;
+    t21 = t14;
+    t22 = t15;
+    t12 = t20 + t21;
+    t13 = t18 + t22;
+    t14 = t20 - t21;
+    t15 = t18 - t22;
+    t23 = t0 + t1;
+    t17 = t0 - t1;
+    t0 = t23;
+    t19 = t17;
+    t16 = 0;
+    t20 = t4 + t14;
+    t18 = t5 - t15;
+    t21 = t5 + t15;
+    t22 = t14 - t4;
+    t23 = 0.9238795325112865 * (t21 + t22);
+    t17 = t21 * (-1.306562964876377);
+    t24 = t22 * 0.5411961001461961;
+    t21 = t23 - t24;
+    t22 = t23 + t17;
+    t4 = t20 + t21;
+    t5 = t18 + t22;
+    t14 = t20 - t21;
+    t15 = t22 - t18;
+    t20 = t8 + t10;
+    t18 = t9 - t11;
+    t21 = t9 + t11;
+    t22 = t10 - t8;
+    t24 = t21 + t22;
+    t23 = t22 - t21;
+    t21 = t24 * 0.7071067811865476;
+    t22 = t23 * 0.7071067811865476;
+    t8 = t20 + t21;
+    t9 = t18 + t22;
+    t10 = t20 - t21;
+    t11 = t22 - t18;
+    t17 = t12 + t6;
+    t20 = t13 - t7;
+    t18 = t13 + t7;
+    t21 = t6 - t12;
+    t22 = 0.38268343236509 * (t18 + t21);
+    t24 = t18 * (-1.3065629648763766);
+    t23 = t21 * (-0.5411961001461967);
+    t18 = t22 - t23;
+    t21 = t22 + t24;
+    t12 = t17 + t18;
+    t13 = t20 + t21;
+    t6 = t17 - t18;
+    t7 = t21 - t20;
+    t17 = t2 + t2;
+    t20 = t3 + t3;
+    t22 = t2 - t2;
+    t18 = t20;
+    t20 = t22;
+    t22 = -t18;
+    t2 = t17 + t20;
+    t3 = t22;
+    t21 = 0.49759236333609846 * (t4 + t5);
+    t24 = t4 * (-0.5466009335008787);
+    t23 = t5 * 0.4485837931713182;
+    t4 = t21 - t23;
+    t5 = t21 + t24;
+    t17 = 0.49039264020161516 * (t8 + t9);
+    t20 = t8 * (-0.5879378012096795);
+    t18 = t9 * 0.3928474791935508;
+    t8 = t17 - t18;
+    t9 = t17 + t20;
+    t22 = 0.4784701678661044 * (t12 + t13);
+    t21 = t12 * (-0.6236125064933357);
+    t24 = t13 * 0.33332782923887316;
+    t12 = t22 - t24;
+    t13 = t22 + t21;
+    t23 = 0.46193976625564326 * (t2 + t3);
+    t17 = t2 * (-0.6532814824381885);
+    t20 = t3 * 0.27059805007309806;
+    t2 = t23 - t20;
+    t3 = t23 + t17;
+    t18 = 0.4409606321741774 * (t6 + t7);
+    t22 = t6 * (-0.6766590005871764);
+    t21 = t7 * 0.20526226376117845;
+    t6 = t18 - t21;
+    t7 = t18 + t22;
+    t24 = 0.4157348061512726 * (t10 + t11);
+    t23 = t10 * (-0.6935199226610738);
+    t17 = t11 * 0.13794968964147153;
+    t10 = t24 - t17;
+    t11 = t24 + t23;
+    t20 = 0.38650522668136833 * (t14 + t15);
+    t18 = t14 * (-0.7037018687631913);
+    t22 = t15 * 0.06930858459954536;
+    t14 = t20 - t22;
+    t15 = t20 + t18;
+    t21 = t19 + t16;
+    t19 = t21 * 0.7071067811865476;
+    dct_out[0] = t0;
+    dct_out[1] = t4;
+    dct_out[2] = t8;
+    dct_out[3] = t12;
+    dct_out[4] = t2;
+    dct_out[5] = t6;
+    dct_out[6] = t10;
+    dct_out[7] = t14;
+    dct_out[8] = t19;
+    dct_out[9] = -t15;
+    dct_out[10] = -t11;
+    dct_out[11] = -t7;
+    dct_out[12] = -t3;
+    dct_out[13] = -t13;
+    dct_out[14] = -t9;
+    dct_out[15] = -t5;
+    return dct_out;
+}
+
+/**
+ *  Do 16-point Type-II IDCT (not orthogonalized).
+ * 
+ *  Note(s):
+ *    [1] Expected output:
+ *        idct_out[n] = sum(k = 0...N-1, idct_in[k] * cos((2n + 1)kπ / 2N))
+ *        (where 0 <= n < N, N = 16).
+ *    [2] In-place transformation is supported.
+ * 
+ *  @param {Number[]} idct_in
+ *    - The input vector.
+ *  @param {Number[]} [idct_out]
+ *    - The output vector.
+ *  @returns {Number[]}
+ *    - The output vector.
+ */
+function DCTIIInverse_16(idct_in, idct_out = new Array(16)) {
+    //
+    //  This function was generated by our proprietary DCT compiler 
+    //  automatically.
+    //  Do NOT modified the code manually.
+    //
+    let t0, t1, t10, t11, t12, t13, t14, t15, t16, t17, t18, t19, t2, t20, t21, t22, t23, t3, t4, t5, t6, t7, t8, t9;
+    t16 = idct_in[0];
+    t17 = 0.7071067811865476 * idct_in[8];
+    t0 = t16 + t17;
+    t1 = t16 - t17;
+    t16 = idct_in[1];
+    t17 = idct_in[15];
+    t20 = 0.49759236333609846 * (t16 + t17);
+    t21 = t16 * (-0.5466009335008787);
+    t22 = t17 * 0.4485837931713182;
+    t16 = t20 - t22;
+    t17 = t20 + t21;
+    t18 = idct_in[7];
+    t19 = idct_in[9];
+    t22 = 0.38650522668136833 * (t18 + t19);
+    t21 = t18 * (-0.7037018687631913);
+    t20 = t19 * 0.06930858459954536;
+    t18 = t22 - t20;
+    t19 = t22 + t21;
+    t22 = t16 + t18;
+    t21 = t17 - t19;
+    t20 = -(t17 + t19);
+    t23 = t16 - t18;
+    t19 = 0.9238795325112865 * (t20 + t23);
+    t18 = t20 * (-1.306562964876377);
+    t16 = t23 * 0.5411961001461961;
+    t20 = t19 - t16;
+    t23 = t19 + t18;
+    t2 = t22 + t20;
+    t3 = t21 + t23;
+    t14 = t22 - t20;
+    t15 = t23 - t21;
+    t17 = idct_in[2];
+    t23 = idct_in[14];
+    t21 = 0.49039264020161516 * (t17 + t23);
+    t20 = t17 * (-0.5879378012096795);
+    t18 = t23 * 0.3928474791935508;
+    t17 = t21 - t18;
+    t23 = t21 + t20;
+    t19 = idct_in[6];
+    t22 = idct_in[10];
+    t16 = 0.4157348061512726 * (t19 + t22);
+    t21 = t19 * (-0.6935199226610738);
+    t20 = t22 * 0.13794968964147153;
+    t19 = t16 - t20;
+    t22 = t16 + t21;
+    t18 = t17 + t19;
+    t16 = t23 - t22;
+    t21 = -(t23 + t22);
+    t20 = t17 - t19;
+    t17 = t21 + t20;
+    t23 = t20 - t21;
+    t21 = t17 * 0.7071067811865476;
+    t20 = t23 * 0.7071067811865476;
+    t4 = t18 + t21;
+    t5 = t16 + t20;
+    t12 = t18 - t21;
+    t13 = t20 - t16;
+    t19 = idct_in[3];
+    t22 = idct_in[13];
+    t18 = 0.4784701678661044 * (t19 + t22);
+    t17 = t19 * (-0.6236125064933357);
+    t16 = t22 * 0.33332782923887316;
+    t19 = t18 - t16;
+    t22 = t18 + t17;
+    t21 = idct_in[5];
+    t20 = idct_in[11];
+    t23 = 0.4409606321741774 * (t21 + t20);
+    t18 = t21 * (-0.6766590005871764);
+    t17 = t20 * 0.20526226376117845;
+    t21 = t23 - t17;
+    t20 = t23 + t18;
+    t16 = t19 + t21;
+    t23 = t22 - t20;
+    t18 = -(t22 + t20);
+    t17 = t19 - t21;
+    t19 = 0.38268343236509 * (t18 + t17);
+    t22 = t18 * (-1.3065629648763766);
+    t21 = t17 * (-0.5411961001461967);
+    t18 = t19 - t21;
+    t17 = t19 + t22;
+    t6 = t16 + t18;
+    t7 = t23 + t17;
+    t10 = t16 - t18;
+    t11 = t17 - t23;
+    t8 = idct_in[4];
+    t9 = idct_in[12];
+    t18 = 0.9238795325112865 * (t8 + t9);
+    t20 = t8 * (-1.306562964876377);
+    t16 = t9 * 0.5411961001461961;
+    t8 = t18 - t16;
+    t9 = t18 + t20;
+    t23 = t0 + t8;
+    t19 = t1 + t9;
+    t22 = t4 + t12;
+    t17 = t5 + t13;
+    t21 = t0 - t8;
+    t18 = t1 - t9;
+    t20 = t4 - t12;
+    t16 = t5 - t13;
+    t0 = t23 + t22;
+    t1 = t19 + t17;
+    t4 = t21 + t16;
+    t5 = t18 - t20;
+    t8 = t23 - t22;
+    t9 = t19 - t17;
+    t12 = t21 - t16;
+    t13 = t18 + t20;
+    t23 = t2 + t10;
+    t19 = t3 + t11;
+    t22 = t6 + t14;
+    t21 = t7 + t15;
+    t20 = t2 - t10;
+    t18 = t3 - t11;
+    t17 = t6 - t14;
+    t16 = t7 - t15;
+    t2 = t23 + t22;
+    t3 = t19 + t21;
+    t6 = t20 + t16;
+    t7 = t18 - t17;
+    t10 = t23 - t22;
+    t11 = t19 - t21;
+    t14 = t20 - t16;
+    t15 = t18 + t17;
+    t20 = t6 + t7;
+    t23 = t7 - t6;
+    t6 = t20 * 0.7071067811865476;
+    t7 = t23 * 0.7071067811865476;
+    t17 = t10;
+    t10 = t11;
+    t11 = -t17;
+    t22 = t15 - t14;
+    t21 = -t14 - t15;
+    t14 = t22 * 0.7071067811865476;
+    t15 = t21 * 0.7071067811865476;
+    t18 = t0;
+    t16 = t1;
+    t19 = t2;
+    t20 = t3;
+    t0 = t18 + t19;
+    t1 = t16 + t20;
+    t2 = t18 - t19;
+    t3 = t16 - t20;
+    t23 = t4;
+    t17 = t5;
+    t22 = t6;
+    t21 = t7;
+    t4 = t23 + t22;
+    t5 = t17 + t21;
+    t6 = t23 - t22;
+    t7 = t17 - t21;
+    t18 = t8;
+    t16 = t9;
+    t19 = t10;
+    t20 = t11;
+    t8 = t18 + t19;
+    t9 = t16 + t20;
+    t10 = t18 - t19;
+    t11 = t16 - t20;
+    t23 = t12;
+    t17 = t13;
+    t22 = t14;
+    t21 = t15;
+    t12 = t23 + t22;
+    t13 = t17 + t21;
+    t14 = t23 - t22;
+    t15 = t17 - t21;
+    idct_out[0] = t0;
+    idct_out[1] = t15;
+    idct_out[2] = t1;
+    idct_out[3] = t14;
+    idct_out[4] = t4;
+    idct_out[5] = t11;
+    idct_out[6] = t5;
+    idct_out[7] = t10;
+    idct_out[8] = t8;
+    idct_out[9] = t7;
+    idct_out[10] = t9;
+    idct_out[11] = t6;
+    idct_out[12] = t12;
+    idct_out[13] = t3;
+    idct_out[14] = t13;
+    idct_out[15] = t2;
+    return idct_out;
+}
+
+//  Exported public APIs.
+module.exports = {
+    "DCTIIForward_16": DCTIIForward_16,
+    "DCTIIInverse_16": DCTIIInverse_16
+};
+    },
     "lc3/math/fft-mx-60": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -8301,7 +8818,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-80": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -8536,7 +9053,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-120": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -8981,7 +9498,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-160": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -9536,7 +10053,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-180": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -10159,7 +10676,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-240": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -10958,7 +11475,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-320": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -12029,7 +12546,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-360": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -13590,7 +14107,7 @@ module.exports = {
     },
     "lc3/math/fft-mx-480": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -15645,9 +16162,41 @@ module.exports = {
     },
     "lc3/math/fft-mx-baseop": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
+//
+
+//
+//  Note(s):
+//    [1] The algorithm for MXTr2(), MXTr3(), MXTr4() and MXTr5() is derived 
+//        from the paper authored by S. Winograd:
+//
+//        - Winograd, S. (1978).
+//          On Computing the Discrete Fourier Transform. 
+//          Mathematics of Computation, 32(141), 175–199. 
+//          https://doi.org/10.2307/2006266
+//
+//    [2] Mixed-radix Cooley-Tukey algorithm is used in the implementation of 
+//        `fft-mx-*.js` (except this file).
+//
+//    [3] For understanding mixed-radix Cooley-Tukey algorithm, see following 
+//        reference materials:
+//
+//        - Cooley, J. W., & Tukey, J. W. (1965). 
+//          An Algorithm for the Machine Calculation of Complex Fourier Series. 
+//          Mathematics of Computation, 19(90), 297–301. 
+//          https://doi.org/10.2307/2003354
+//
+//        - Wikipedia
+//          https://en.wikipedia.org/wiki/Cooley%E2%80%93Tukey_FFT_algorithm
+//
+//    [4] The `fft-mx-*.js` files (except this file) is generated by our 
+//        proprietary FFT compiler.
+//        The source of this FFT compiler is currently opened for reference 
+//        purpose:
+//
+//        - https://drive.google.com/file/d/1JK7sRMzAQuyf_jH7sQuDBNTpFdiz6D7D/view
 //
 
 //
@@ -15919,7 +16468,7 @@ module.exports = {
     },
     "lc3/math/fft-tfm-bluestein": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -16130,7 +16679,7 @@ module.exports = {
     },
     "lc3/math/fft-tfm-cooleytukey": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -16373,7 +16922,7 @@ module.exports = {
     },
     "lc3/math/fft-tfm-core": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -16441,7 +16990,7 @@ module.exports = {
     },
     "lc3/math/fft": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -16708,7 +17257,7 @@ module.exports = {
     },
     "lc3/math/mdct": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -17112,7 +17661,7 @@ module.exports = {
     },
     "lc3/math/mpvq": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -17419,7 +17968,7 @@ module.exports = {
     },
     "lc3/math/pvq": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -17637,7 +18186,7 @@ module.exports = {
     },
     "lc3/tables/ac_spec": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18376,7 +18925,7 @@ module.exports = {
     },
     "lc3/tables/bw": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18394,7 +18943,7 @@ module.exports = {
     },
     "lc3/tables/i": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18452,7 +19001,7 @@ module.exports = {
     },
     "lc3/tables/i10": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18499,7 +19048,7 @@ module.exports = {
     },
     "lc3/tables/i75": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18546,7 +19095,7 @@ module.exports = {
     },
     "lc3/tables/ltpf": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18762,7 +19311,7 @@ module.exports = {
     },
     "lc3/tables/nb": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18784,7 +19333,7 @@ module.exports = {
     },
     "lc3/tables/ne": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18810,7 +19359,7 @@ module.exports = {
     },
     "lc3/tables/nf": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18836,7 +19385,7 @@ module.exports = {
     },
     "lc3/tables/nle": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18868,7 +19417,7 @@ module.exports = {
     },
     "lc3/tables/nnidx": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -18890,7 +19439,7 @@ module.exports = {
     },
     "lc3/tables/sns": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -19262,27 +19811,6 @@ const GIJ = [
     SNS_VQ_FAR_ADJ_GAINS
 ];
 
-//  DCT-II (16 * 16) rotation matrix (normalized).
-//  D[16][16]:
-const DCTII_16x16 = [
-    [0.25, 0.35185093438159565, 0.3467599613305369, 0.33832950029358816, 0.32664074121909414, 0.31180625324666783, 0.2939689006048397, 0.2733004667504394, 0.25000000000000006, 0.2242918965856591, 0.1964237395967756, 0.1666639146194367, 0.13529902503654928, 0.10263113188058934, 0.06897484482073578, 0.034654292299772925],
-    [0.25, 0.33832950029358816, 0.2939689006048397, 0.2242918965856591, 0.13529902503654928, 0.034654292299772925, -0.06897484482073574, -0.16666391461943666, -0.25, -0.3118062532466678, -0.3467599613305369, -0.35185093438159565, -0.3266407412190942, -0.27330046675043945, -0.19642373959677553, -0.10263113188058938],
-    [0.25, 0.31180625324666783, 0.1964237395967756, 0.034654292299772925, -0.13529902503654925, -0.2733004667504394, -0.3467599613305369, -0.3383295002935882, -0.25000000000000006, -0.10263113188058938, 0.06897484482073576, 0.22429189658565912, 0.3266407412190941, 0.35185093438159565, 0.29396890060483977, 0.16666391461943675],
-    [0.25, 0.2733004667504394, 0.06897484482073578, -0.16666391461943666, -0.32664074121909414, -0.3383295002935882, -0.19642373959677553, 0.03465429229977269, 0.24999999999999994, 0.35185093438159565, 0.29396890060483977, 0.10263113188058942, -0.1352990250365493, -0.3118062532466678, -0.34675996133053694, -0.22429189658565904],
-    [0.25, 0.2242918965856591, -0.06897484482073574, -0.3118062532466678, -0.3266407412190942, -0.10263113188058938, 0.19642373959677542, 0.35185093438159565, 0.25000000000000006, -0.03465429229977264, -0.29396890060483966, -0.33832950029358816, -0.13529902503654953, 0.16666391461943653, 0.3467599613305369, 0.2733004667504396],
-    [0.25, 0.1666639146194367, -0.19642373959677548, -0.35185093438159565, -0.13529902503654945, 0.22429189658565912, 0.3467599613305369, 0.10263113188058942, -0.24999999999999972, -0.33832950029358816, -0.06897484482073567, 0.2733004667504394, 0.32664074121909414, 0.03465429229977294, -0.2939689006048396, -0.3118062532466682],
-    [0.25, 0.10263113188058934, -0.2939689006048397, -0.27330046675043945, 0.13529902503654934, 0.35185093438159565, 0.06897484482073593, -0.3118062532466678, -0.2499999999999999, 0.16666391461943653, 0.34675996133053694, 0.03465429229977294, -0.32664074121909403, -0.22429189658565912, 0.1964237395967753, 0.3383295002935884],
-    [0.25, 0.034654292299772925, -0.3467599613305369, -0.10263113188058938, 0.3266407412190941, 0.16666391461943675, -0.29396890060483966, -0.22429189658565904, 0.2499999999999997, 0.2733004667504396, -0.1964237395967753, -0.3118062532466682, 0.13529902503654917, 0.3383295002935884, -0.06897484482073586, -0.3518509343815957],
-    [0.25, -0.03465429229977288, -0.3467599613305369, 0.10263113188058924, 0.32664074121909414, -0.16666391461943658, -0.2939689006048398, 0.22429189658565882, 0.24999999999999992, -0.2733004667504394, -0.1964237395967757, 0.311806253246668, 0.13529902503654964, -0.3383295002935882, -0.06897484482073646, 0.3518509343815956],
-    [0.25, -0.10263113188058928, -0.29396890060483977, 0.2733004667504393, 0.1352990250365495, -0.35185093438159565, 0.06897484482073538, 0.31180625324666794, -0.24999999999999964, -0.16666391461943686, 0.3467599613305369, -0.03465429229977309, -0.3266407412190945, 0.22429189658565868, 0.19642373959677578, -0.33832950029358816],
-    [0.25, -0.16666391461943666, -0.19642373959677553, 0.35185093438159565, -0.1352990250365493, -0.22429189658565904, 0.3467599613305369, -0.10263113188058942, -0.24999999999999994, 0.3383295002935882, -0.06897484482073586, -0.27330046675043934, 0.3266407412190942, -0.03465429229977301, -0.2939689006048396, 0.31180625324666794],
-    [0.25, -0.22429189658565904, -0.0689748448207359, 0.31180625324666783, -0.32664074121909403, 0.10263113188058946, 0.19642373959677567, -0.35185093438159565, 0.2499999999999996, 0.034654292299773654, -0.2939689006048396, 0.33832950029358816, -0.13529902503654906, -0.16666391461943703, 0.34675996133053705, -0.2733004667504396],
-    [0.25, -0.2733004667504394, 0.06897484482073576, 0.16666391461943675, -0.32664074121909414, 0.33832950029358805, -0.1964237395967753, -0.03465429229977361, 0.25, -0.3518509343815957, 0.2939689006048392, -0.10263113188058925, -0.13529902503654978, 0.31180625324666833, -0.3467599613305366, 0.22429189658565854],
-    [0.25, -0.3118062532466678, 0.19642373959677542, -0.03465429229977264, -0.13529902503654953, 0.2733004667504396, -0.34675996133053694, 0.3383295002935882, -0.2499999999999996, 0.1026311318805893, 0.0689748448207365, -0.22429189658565923, 0.3266407412190945, -0.3518509343815956, 0.2939689006048398, -0.16666391461943508],
-    [0.25, -0.33832950029358816, 0.2939689006048397, -0.22429189658565885, 0.13529902503654925, -0.03465429229977256, -0.06897484482073638, 0.16666391461943691, -0.25000000000000006, 0.3118062532466683, -0.346759961330537, 0.3518509343815956, -0.3266407412190937, 0.2733004667504388, -0.19642373959677503, 0.10263113188058905],
-    [0.25, -0.3518509343815956, 0.3467599613305368, -0.33832950029358805, 0.32664074121909403, -0.3118062532466677, 0.29396890060483927, -0.27330046675043895, 0.24999999999999956, -0.22429189658565865, 0.19642373959677514, -0.16666391461943517, 0.13529902503654775, -0.10263113188058788, 0.06897484482073434, -0.0346542922997715]
-];
-
 //  Export public APIs.
 module.exports = {
     "LFCB": LFCB,
@@ -19293,13 +19821,12 @@ module.exports = {
     "SNS_VQ_FAR_ADJ_GAINS": SNS_VQ_FAR_ADJ_GAINS,
     "SNS_GAINMSBBITS": SNS_GAINMSBBITS,
     "SNS_GAINLSBBITS": SNS_GAINLSBBITS,
-    "GIJ": GIJ,
-    "DCTII_16x16": DCTII_16x16
+    "GIJ": GIJ
 };
     },
     "lc3/tables/sq": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -19666,7 +20193,7 @@ module.exports = {
     },
     "lc3/tables/tns": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -19991,7 +20518,7 @@ module.exports = {
     },
     "lc3/tables/w": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -20090,7 +20617,7 @@ module.exports = {
     },
     "lc3/tables/w10_80": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -20164,7 +20691,7 @@ module.exports = {
     },
     "lc3/tables/w10_160": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -20291,7 +20818,7 @@ module.exports = {
     },
     "lc3/tables/w10_240": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -20471,7 +20998,7 @@ module.exports = {
     },
     "lc3/tables/w10_320": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -20705,7 +21232,7 @@ module.exports = {
     },
     "lc3/tables/w10_480": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21045,7 +21572,7 @@ module.exports = {
     },
     "lc3/tables/w75_60": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21105,7 +21632,7 @@ module.exports = {
     },
     "lc3/tables/w75_120": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21205,7 +21732,7 @@ module.exports = {
     },
     "lc3/tables/w75_180": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21345,7 +21872,7 @@ module.exports = {
     },
     "lc3/tables/w75_240": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21525,7 +22052,7 @@ module.exports = {
     },
     "lc3/tables/w75_360": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21785,7 +22312,7 @@ module.exports = {
     },
     "lc3/tables/z": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21811,7 +22338,7 @@ module.exports = {
     },
     "lc3/error": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
@@ -21920,7 +22447,7 @@ module.exports = {
     },
     "browser/src/api": function(module, require) {
 //
-//  Copyright 2021 XiaoJSoft Studio. All rights reserved.
+//  Copyright 2021 - 2023 XiaoJSoft Studio. All rights reserved.
 //  Use of this source code is governed by a BSD-style license that can be
 //  found in the LICENSE.md file.
 //
